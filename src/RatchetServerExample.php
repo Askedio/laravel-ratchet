@@ -7,7 +7,7 @@ use Ratchet\ConnectionInterface;
 /**
  * Echo Server Example.
  */
-class RatchetServerExample extends RatchetServer
+class RatchetServerExample extends RatchetServer implements Contracts\RatchetServer
 {
     public function onMessage(ConnectionInterface $conn, $input)
     {

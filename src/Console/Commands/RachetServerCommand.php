@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
+use Ratchet\Wamp\WampServer;
 use Symfony\Component\Console\Input\InputOption;
 
 class RatchetServerCommand extends Command
@@ -81,6 +82,10 @@ class RatchetServerCommand extends Command
             return $this->getWsServerDriver($ratchetServer);
         }
 
+        if ($driver == 'WampServer') {
+            return $this->getWampServerDriver($ratchetServer);
+        }
+
         return $ratchetServer;
     }
 
@@ -95,6 +100,22 @@ class RatchetServerCommand extends Command
     {
         return new HttpServer(
             new WsServer(
+                $ratchetServer
+            )
+        );
+    }
+
+    /**
+     * Get the WampServer driver.
+     *
+     * @param [type] $ratchetServer [description]
+     *
+     * @return [type] [description]
+     */
+    private function getWampServerDriver($ratchetServer)
+    {
+        return $this->getWsServerDriver(
+            new WampServer(
                 $ratchetServer
             )
         );
@@ -127,7 +148,7 @@ class RatchetServerCommand extends Command
             ['host', null, InputOption::VALUE_OPTIONAL, 'Ratchet server host', config('ratchet.host', '0.0.0.0')],
             ['port', 'p', InputOption::VALUE_OPTIONAL, 'Ratchet server port', config('ratchet.port', 9090)],
             ['class', null, InputOption::VALUE_OPTIONAL, 'Class that implements MessageComponentInterface.', config('ratchet.class')],
-            ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer]', 'WsServer'],
+            ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer|WampServer]', 'WsServer'],
         ];
     }
 }
