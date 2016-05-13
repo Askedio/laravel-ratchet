@@ -47,7 +47,7 @@ class RatchetServer extends \Askedio\LaravelRatchet\RatchetServer
 ~~~
 You'll need to change the class to `App\RatchetServer::class` in your command line or config.
 ~~~
-php artisan ratchet:serv --class=App\RatchetServer::class
+php artisan ratchet:serve --class=App\RatchetServer::class
 ~~~
 
 # Command Line
