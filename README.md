@@ -4,7 +4,7 @@
 An Artisan Command for running your own [Ratchet](http://socketo.me/) Server with [Laravel 5](https://laravel.com/).
 
 # What's Inside
-The Artisan Command will start a [io](http://socketo.me/docs/server) or [ws](http://socketo.me/docs/websocket) ratchet server with the `MessageComponentInterface` class of your making. I've added a few functions like `abort` `send` and `sendAll` to make some common tasks easier.
+The Artisan Command will start a [Ratchet](http://socketo.me/) [Io Server](http://socketo.me/docs/server) or [Web Socket](http://socketo.me/docs/websocket) with the `MessageComponentInterface` class of your making. I've added a few functions like `abort()` `send()` and `sendAll()` to make some common tasks easier.
 
 
 # Installation
@@ -12,6 +12,7 @@ Install with composer
 ~~~
 composer require askedio/laravel-ratchet:dev-master
 ~~~
+
 Register in the providers array in `config/app.php`
 ~~~
 Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
