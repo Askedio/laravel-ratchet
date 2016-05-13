@@ -1,4 +1,4 @@
-![Header](http://i.imgur.com/OmPzal8.png)
+![Header](http://i.imgur.com/H1OQeOV.png)
 
 # Laravel Ratchet Server
 An Artisan Command for running your own Ratchet Server with Laravel 5.2.
