@@ -24,7 +24,7 @@ php artisan vendor:publish --class=Askedio\LaravelRatchet\Providers\LaravelRatch
 ~~~
 
 # Example
-`RatchetServerExample.php` is the default class used for the Ratchet Server, it's really simple. Here is a version you could use.
+`RatchetServerExample.php` is the default class used for the Ratchet Server, it's really simple. Here is a copy you could use.
 ~~~
 <?php
 
@@ -32,7 +32,7 @@ namespace App;
 
 use Ratchet\ConnectionInterface;
 
-class RatchetServer extends \Askedio\LaravelRache\RatchetServer
+class RatchetServer extends \Askedio\LaravelRatchet\RatchetServer
 {
     public function onMessage(ConnectionInterface $conn, $input)
     {
@@ -48,14 +48,14 @@ class RatchetServer extends \Askedio\LaravelRache\RatchetServer
     }
 }
 ~~~
-You'll need to change the class to `App\RatchetServerExample::class` in your command line or config.
+You'll need to change the class to `App\RatchetServer::class` in your command line or config.
 ~~~
-php artisan ratchet:serv --class=App\RatchetServerExample::class
+php artisan ratchet:serv --class=App\RatchetServer::class
 ~~~
 
-# Serve
+# Command Line
 ~~~
-▶ php artisan ratchet:serve  --help
+php artisan ratchet:serve  --help
 Usage:
   ratchet:serve [options]
 
