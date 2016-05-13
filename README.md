@@ -68,7 +68,7 @@ Options:
 
 
 # Testing
-There are no tests and I don't care to write them at this time.
+See contributing.
 
-# Contribute
+# Contributing
 Write some tests, that'd be swell.
