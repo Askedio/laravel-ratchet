@@ -22,7 +22,7 @@ php artisan vendor:publish --class=Askedio\LaravelRachet\Providers\LaravelRachet
 ~~~
 
 # Example
-`RachetServer.php` is the default class used for the Rachet Server, it's really simple. Here is a version you could use.
+`RachetServerExample.php` is the default class used for the Rachet Server, it's really simple. Here is a version you could use.
 ~~~
 <?php
 
@@ -47,6 +47,9 @@ class RachetServer extends \Askedio\LaravelRache\RachetServer
 }
 ~~~
 You'll need to change the class to `App\RachetServerExample::class` in your command line or config.
+~~~
+php artisan rachet:serv --class=App\RachetServerExample::class
+~~~
 
 # Serve
 ~~~
