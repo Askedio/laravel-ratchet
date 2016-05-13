@@ -1,6 +1,7 @@
 <?php
 
 namespace Askedio\LaravelRachet;
+
 use Ratchet\ConnectionInterface;
 
 /**
