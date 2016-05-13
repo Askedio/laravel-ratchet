@@ -42,14 +42,14 @@ abstract class RatchetServer implements MessageComponentInterface
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
-        $this->console->info(sprintf('New connection! (%s)', $conn->resourceId));
+        $this->console->info(sprintf('Connected: %d', $conn->resourceId));
 
         $connections = count($this->clients);
-        $this->console->info(sprintf('%d connection%s\n', $connections, $connections == 1 ? '' : 's'));
+        $this->console->info(sprintf('%d %s', $connections, str_plural('connection', $connections)));
 
         if ($connectionLimit = config('ratchet.connectionLimit')) {
             if ($connections - 1 >= $connectionLimit) {
-                $this->console->info(sprintf('To many connections %d of %d\n', $connections - 1, $connectionLimit));
+                $this->console->info(sprintf('To many connections: %d of %d', $connections - 1, $connectionLimit));
                 $conn->send('to_many_connections');
                 $conn->close();
             }
@@ -68,7 +68,7 @@ abstract class RatchetServer implements MessageComponentInterface
      */
     public function onMessage(ConnectionInterface $conn, $input)
     {
-        $this->console->info(sprintf('Connection %d sent message "%s"'."\n", $conn->resourceId, $input));
+        $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, $input));
         event('ratchetMessage', [$conn, $input]);
     }
 
@@ -82,7 +82,7 @@ abstract class RatchetServer implements MessageComponentInterface
     public function onClose(ConnectionInterface $conn)
     {
         $this->clients->detach($conn);
-        $this->console->info(sprintf('Connection (%s) has disconnected', $conn->resourceId));
+        $this->console->error(sprintf('Disconnected: %d', $conn->resourceId));
         event('ratchetClose', $conn);
     }
 
@@ -98,7 +98,7 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         $message = $exception->getMessage();
         $conn->close();
-        $this->console->error(sprintf('An error has occurred: %s', $message));
+        $this->console->error(sprintf('Error: %s', $message));
         event('ratchetError', [$conn, $message]);
     }
 
