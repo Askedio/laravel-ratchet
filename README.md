@@ -14,12 +14,6 @@ Register in the providers array in `config/app.php`
 Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
 ~~~
 
-# Configuration
-You can configure the default host, port, class and max connections in `config/ratchet.php`, publish the config to make adjustments.
-~~~
-php artisan vendor:publish --class=Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class
-~~~
-
 # Example
 `RatchetServerExample.php` is the default class used for the Ratchet Server, it's really simple. Here is a copy you could use.
 ~~~
@@ -63,6 +57,19 @@ Options:
       --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
       --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer] [default: "IoServer"]
 ~~~
+
+
+# Configuration
+You can configure the default host, port, class and max connections in `config/ratchet.php`, publish the config to make adjustments.
+~~~
+php artisan vendor:publish --class=Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class
+~~~
+### Configuration Options
+* class: Your MessageComponentInterface or WampServerInterface class (or the packages wrappers).
+* host: The host to listen on.
+* port: The port to listen on.
+* connectionLimit: The total number of connections allowed (RatchetServer only).
+* blackList: The hosts to ban using [IpBlackList](http://socketo.me/docs/black).
 
 # Options
 Send a message to the current connection.
