@@ -8,6 +8,7 @@ use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Wamp\WampServer;
 use Symfony\Component\Console\Input\InputOption;
+use Ratchet\Server\IpBlackList;
 
 class RatchetServerCommand extends Command
 {
@@ -76,7 +77,11 @@ class RatchetServerCommand extends Command
     {
         $class = $this->option('class');
 
-        $ratchetServer = new $class($this);
+        $ratchetServer = new IpBlackList(new $class($this));
+
+        foreach (config('ratchet.blackList')->all() as $host) {
+            $ratchetServer->blockAddress($host);
+        };
 
         if ($driver == 'WsServer') {
             return $this->getWsServerDriver($ratchetServer);

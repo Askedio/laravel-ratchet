@@ -15,4 +15,5 @@ return [
     'host'            => '0.0.0.0',
     'port'            => '9090',
     'connectionLimit' => false,
+    'blackList'       => collect([]),
 ];
