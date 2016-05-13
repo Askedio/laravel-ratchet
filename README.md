@@ -1,10 +1,6 @@
 ![Header](http://i.imgur.com/H1OQeOV.png)
 
-# Laravel Ratchet Server
-An Artisan Command for running your own [Ratchet](http://socketo.me/) Server with [Laravel 5](https://laravel.com/).
-
-# What's Inside
-The Artisan Command will start a [Ratchet](http://socketo.me/) [Io Server](http://socketo.me/docs/server) or [Web Socket](http://socketo.me/docs/websocket) with the `MessageComponentInterface` class of your making. I've added a few functions like `abort()` `send()` and `sendAll()` to make some common tasks easier.
+This package provides the artisan command `ratchet:serve` that will start a [Ratchet](http://socketo.me/) [Io Server](http://socketo.me/docs/server) or [Web Socket](http://socketo.me/docs/websocket) with the `MessageComponentInterface` class of your making. I've added a few functions like `abort()` `send()` and `sendAll()` to make some common tasks easier.
 
 
 # Installation
@@ -57,6 +53,7 @@ php artisan ratchet:serv --class=App\RatchetServer::class
 # Command Line
 ~~~
 php artisan ratchet:serve  --help
+
 Usage:
   ratchet:serve [options]
 
