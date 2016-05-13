@@ -1,0 +1,17 @@
+{
+    "name": "askedio/laravel-rachet",
+    "description": "A Rachet Example",
+    "keywords": ["laravel"],
+    "license": "MIT",
+    "type": "library",
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/framework": "5.2.*",
+        "cboden/ratchet": "^0.3.4"
+     },
+    "autoload": {
+        "psr-4": {
+            "Askedio\\LaravelRachet\\": "src/"
+        }
+    }
+}
