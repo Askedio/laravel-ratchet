@@ -1,10 +1,10 @@
 ![Header](http://i.imgur.com/H1OQeOV.png)
 
 # Laravel Ratchet Server
-An Artisan Command for running your own Ratchet Server with Laravel 5.2.
+An Artisan Command for running your own [Ratchet](http://socketo.me/) Server with [Laravel 5](https://laravel.com/).
 
 # What's Inside
-The Artisan Command will start a io or ws ratchet server with the `MessageComponentInterface` class of your making. I've added a few functions like `abort` `send` and `sendAll` to make some common tasks easier.
+The Artisan Command will start a [io](http://socketo.me/docs/server) or [ws](http://socketo.me/docs/websocket) ratchet server with the `MessageComponentInterface` class of your making. I've added a few functions like `abort` `send` and `sendAll` to make some common tasks easier.
 
 
 # Installation
