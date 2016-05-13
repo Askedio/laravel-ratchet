@@ -2,43 +2,49 @@
 
 namespace Askedio\LaravelRachet\Contracts;
 
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 
 abstract class RachetServer implements MessageComponentInterface
 {
     /**
      * Clients.
+     *
      * @var [type]
      */
     protected $clients;
 
     /**
      * Console.
+     *
      * @var [type]
      */
     protected $console;
 
     /**
      * Current connection.
+     *
      * @var [type]
      */
     protected $conn;
 
     /**
      * Set clients and console.
+     *
      * @param [type] $console [description]
      */
     public function __construct($console)
     {
-        $this->clients = new \SplObjectStorage;
+        $this->clients = new \SplObjectStorage();
         $this->console = $console;
     }
 
     /**
      * Perform action on open.
-     * @param  ConnectionInterface $conn [description]
-     * @return [type]                    [description]
+     *
+     * @param ConnectionInterface $conn [description]
+     *
+     * @return [type] [description]
      */
     public function onOpen(ConnectionInterface $conn)
     {
@@ -60,9 +66,11 @@ abstract class RachetServer implements MessageComponentInterface
 
     /**
      * Perform action on message.
-     * @param  ConnectionInterface $conn  [description]
-     * @param  [type]              $input [description]
-     * @return [type]                     [description]
+     *
+     * @param ConnectionInterface $conn  [description]
+     * @param [type]              $input [description]
+     *
+     * @return [type] [description]
      */
     public function onMessage(ConnectionInterface $conn, $input)
     {
@@ -71,8 +79,10 @@ abstract class RachetServer implements MessageComponentInterface
 
     /**
      * Perform action on close.
-     * @param  ConnectionInterface $conn [description]
-     * @return [type]                    [description]
+     *
+     * @param ConnectionInterface $conn [description]
+     *
+     * @return [type] [description]
      */
     public function onClose(ConnectionInterface $conn)
     {
@@ -82,9 +92,11 @@ abstract class RachetServer implements MessageComponentInterface
 
     /**
      * Perform action on error.
-     * @param  ConnectionInterface $conn      [description]
-     * @param  Exception           $exception [description]
-     * @return [type]                         [description]
+     *
+     * @param ConnectionInterface $conn      [description]
+     * @param Exception           $exception [description]
+     *
+     * @return [type] [description]
      */
     public function onError(ConnectionInterface $conn, \Exception $exception)
     {
@@ -94,6 +106,7 @@ abstract class RachetServer implements MessageComponentInterface
 
     /**
      * Close the current connection.
+     *
      * @return [type] [description]
      */
     public function abort()
@@ -103,8 +116,10 @@ abstract class RachetServer implements MessageComponentInterface
 
     /**
      * Send a message to the current connection.
-     * @param  [type] $message [description]
-     * @return [type]          [description]
+     *
+     * @param [type] $message [description]
+     *
+     * @return [type] [description]
      */
     public function send($message)
     {
@@ -113,8 +128,10 @@ abstract class RachetServer implements MessageComponentInterface
 
     /**
      * Send a message to all connections.
-     * @param  [type] $message [description]
-     * @return [type]          [description]
+     *
+     * @param [type] $message [description]
+     *
+     * @return [type] [description]
      */
     public function sendAll($message)
     {

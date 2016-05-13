@@ -2,8 +2,8 @@
 
 namespace Askedio\LaravelRachet\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Askedio\LaravelRachet\Console\Commands\RachetServerCommand;
+use Illuminate\Support\ServiceProvider;
 
 class LaravelRachetServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,7 @@ class LaravelRachetServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('command.rachet', function () {
-              return new RachetServerCommand;
+              return new RachetServerCommand();
         });
 
         $this->commands('command.rachet');
