@@ -1,11 +1,11 @@
 <?php
 
-namespace Askedio\LaravelRachet;
+namespace Askedio\LaravelRatchet;
 
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
-abstract class RachetServer implements MessageComponentInterface
+abstract class RatchetServer implements MessageComponentInterface
 {
     /**
      * Clients.
@@ -55,7 +55,7 @@ abstract class RachetServer implements MessageComponentInterface
         $connections = count($this->clients);
         $this->console->info(sprintf('%d connection%s\n', $connections, $connections == 1 ? '' : 's'));
 
-        if ($connectionLimit = config('rachet.connectionLimit')) {
+        if ($connectionLimit = config('ratchet.connectionLimit')) {
             if ($connections - 1 >= $connectionLimit) {
                 $this->console->info(sprintf('To many connections %d of %d\n', $connections - 1, $connectionLimit));
                 $conn->send('to_many_connections');

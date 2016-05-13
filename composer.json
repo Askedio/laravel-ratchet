@@ -1,6 +1,6 @@
 {
-    "name": "askedio/laravel-rachet",
-    "description": "A Rachet Example",
+    "name": "askedio/laravel-ratchet",
+    "description": "A Ratchet Example",
     "keywords": ["laravel"],
     "license": "MIT",
     "type": "library",
@@ -11,7 +11,7 @@
      },
     "autoload": {
         "psr-4": {
-            "Askedio\\LaravelRachet\\": "src/"
+            "Askedio\\LaravelRatchet\\": "src/"
         }
     }
 }

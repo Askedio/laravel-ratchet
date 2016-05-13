@@ -1,13 +1,13 @@
 <?php
 
-namespace Askedio\LaravelRachet;
+namespace Askedio\LaravelRatchet;
 
 use Ratchet\ConnectionInterface;
 
 /**
- * Example Rachet Server example, onMessage sends some stuff and closes connection.
+ * Example Ratchet Server example, onMessage sends some stuff and closes connection.
  */
-class RachetServerExample extends RachetServer
+class RatchetServerExample extends RatchetServer
 {
     public function onMessage(ConnectionInterface $conn, $input)
     {

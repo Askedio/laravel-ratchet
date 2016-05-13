@@ -1,6 +1,6 @@
 <?php
 
-namespace Askedio\LaravelRachet\Console\Commands;
+namespace Askedio\LaravelRatchet\Console\Commands;
 
 use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
@@ -8,21 +8,21 @@ use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Input\InputOption;
 
-class RachetServerCommand extends Command
+class RatchetServerCommand extends Command
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'rachet:serve';
+    protected $name = 'ratchet:serve';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Start Rachet Server';
+    protected $description = 'Start Ratchet Server';
 
     /**
      * Server host.
@@ -75,27 +75,27 @@ class RachetServerCommand extends Command
     {
         $class = $this->option('class');
 
-        $rachetServer = new $class($this);
+        $ratchetServer = new $class($this);
 
         if ($driver == 'WsServer') {
-            return $this->getWsServerDriver($rachetServer);
+            return $this->getWsServerDriver($ratchetServer);
         }
 
-        return $rachetServer;
+        return $ratchetServer;
     }
 
     /**
      * Get the WsServer driver.
      *
-     * @param [type] $rachetServer [description]
+     * @param [type] $ratchetServer [description]
      *
      * @return [type] [description]
      */
-    private function getWsServerDriver($rachetServer)
+    private function getWsServerDriver($ratchetServer)
     {
         return new HttpServer(
             new WsServer(
-                $rachetServer
+                $ratchetServer
             )
         );
     }
@@ -124,10 +124,10 @@ class RachetServerCommand extends Command
     protected function getOptions()
     {
         return [
-            ['host', null, InputOption::VALUE_OPTIONAL, 'Rachet server host', config('rachet.host', '0.0.0.0')],
-            ['port', 'p', InputOption::VALUE_OPTIONAL, 'Rachet server port', config('rachet.port', 9090)],
-            ['class', null, InputOption::VALUE_OPTIONAL, 'Class that implements MessageComponentInterface.', config('rachet.class')],
-            ['driver', null, InputOption::VALUE_OPTIONAL, 'Rachet connection driver [IoServer|WsServer]', 'IoServer'],
+            ['host', null, InputOption::VALUE_OPTIONAL, 'Ratchet server host', config('ratchet.host', '0.0.0.0')],
+            ['port', 'p', InputOption::VALUE_OPTIONAL, 'Ratchet server port', config('ratchet.port', 9090)],
+            ['class', null, InputOption::VALUE_OPTIONAL, 'Class that implements MessageComponentInterface.', config('ratchet.class')],
+            ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer]', 'IoServer'],
         ];
     }
 }

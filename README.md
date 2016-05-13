@@ -1,30 +1,30 @@
 ![Header](http://i.imgur.com/OmPzal8.png)
 
-# Laravel Rachet Server
-An Artisan Command for running your own Rachet Server with Laravel 5.2.
+# Laravel Ratchet Server
+An Artisan Command for running your own Ratchet Server with Laravel 5.2.
 
 # What's Inside
-The Artisan Command will start a io or ws rachet server with the `MessageComponentInterface` class of your making. I've added a few functions like `abort` `send` and `sendAll` to make some common tasks easier.
+The Artisan Command will start a io or ws ratchet server with the `MessageComponentInterface` class of your making. I've added a few functions like `abort` `send` and `sendAll` to make some common tasks easier.
 
 
 # Installation
 Install with composer
 ~~~
-composer require askedio/laravel-rachet:dev-master
+composer require askedio/laravel-ratchet:dev-master
 ~~~
 Register in the providers array in `config/app.php`
 ~~~
-Askedio\LaravelRachet\Providers\LaravelRachetServiceProvider::class,
+Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
 ~~~
 
 # Configuration
-You can configure the default host, port, class and max connections in `config/rachet.php`, publish the config to make adjustments.
+You can configure the default host, port, class and max connections in `config/ratchet.php`, publish the config to make adjustments.
 ~~~
-php artisan vendor:publish --class=Askedio\LaravelRachet\Providers\LaravelRachetServiceProvider::class
+php artisan vendor:publish --class=Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class
 ~~~
 
 # Example
-`RachetServerExample.php` is the default class used for the Rachet Server, it's really simple. Here is a version you could use.
+`RatchetServerExample.php` is the default class used for the Ratchet Server, it's really simple. Here is a version you could use.
 ~~~
 <?php
 
@@ -32,7 +32,7 @@ namespace App;
 
 use Ratchet\ConnectionInterface;
 
-class RachetServer extends \Askedio\LaravelRache\RachetServer
+class RatchetServer extends \Askedio\LaravelRache\RatchetServer
 {
     public function onMessage(ConnectionInterface $conn, $input)
     {
@@ -48,22 +48,22 @@ class RachetServer extends \Askedio\LaravelRache\RachetServer
     }
 }
 ~~~
-You'll need to change the class to `App\RachetServerExample::class` in your command line or config.
+You'll need to change the class to `App\RatchetServerExample::class` in your command line or config.
 ~~~
-php artisan rachet:serv --class=App\RachetServerExample::class
+php artisan ratchet:serv --class=App\RatchetServerExample::class
 ~~~
 
 # Serve
 ~~~
-▶ php artisan rachet:serve  --help
+▶ php artisan ratchet:serve  --help
 Usage:
-  rachet:serve [options]
+  ratchet:serve [options]
 
 Options:
-      --host[=HOST]      Rachet server host [default: "0.0.0.0"]
-  -p, --port[=PORT]      Rachet server port [default: "9090"]
-      --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRachet\RachetServerExample"]
-      --driver[=DRIVER]  Rachet connection driver [IoServer|WsServer] [default: "IoServer"]
+      --host[=HOST]      Ratchet server host [default: "0.0.0.0"]
+  -p, --port[=PORT]      Ratchet server port [default: "9090"]
+      --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
+      --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer] [default: "IoServer"]
 ~~~
 
 
