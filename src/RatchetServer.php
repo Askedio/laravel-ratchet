@@ -54,6 +54,8 @@ abstract class RatchetServer implements MessageComponentInterface
                 $conn->close();
             }
         }
+
+        event('ratchetOpen', $conn);
     }
 
     /**
@@ -67,6 +69,7 @@ abstract class RatchetServer implements MessageComponentInterface
     public function onMessage(ConnectionInterface $conn, $input)
     {
         $this->console->info(sprintf('Connection %d sent message "%s"'."\n", $conn->resourceId, $input));
+        event('ratchetMessage', [$conn, $input]);
     }
 
     /**
@@ -80,6 +83,7 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         $this->clients->detach($conn);
         $this->console->info(sprintf('Connection (%s) has disconnected', $conn->resourceId));
+        event('ratchetClose', $conn);
     }
 
     /**
@@ -92,8 +96,10 @@ abstract class RatchetServer implements MessageComponentInterface
      */
     public function onError(ConnectionInterface $conn, \Exception $exception)
     {
+        $message = $exception->getMessage();
         $conn->close();
-        $this->console->error(sprintf('An error has occurred: %s', $exception->getMessage()));
+        $this->console->error(sprintf('An error has occurred: %s', $message));
+        event('ratchetError', [$conn, $message]);
     }
 
     /**

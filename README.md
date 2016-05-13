@@ -35,11 +35,11 @@ class RatchetServer extends \Askedio\LaravelRatchet\RatchetServer
     {
         parent::onMessage($conn, $input);
 
-        $this->send($conn, 'Hello you.'.PHP_EOL);
+        $this->send($conn, 'Hello you.');
 
-        $this->sendAll('Hello everyone.'.PHP_EOL);
+        $this->sendAll('Hello everyone.');
 
-        $this->send($conn, 'Wait, I don\'t know you! Bye bye!'.PHP_EOL);
+        $this->send($conn, 'Wait, I don\'t know you! Bye bye!');
 
         $this->abort($conn);
     }
@@ -62,6 +62,20 @@ Options:
   -p, --port[=PORT]      Ratchet server port [default: "9090"]
       --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
       --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer] [default: "IoServer"]
+~~~
+
+# Options
+Send a message to the current connection.
+~~~
+$this->send($conn, $message);
+~~~
+Send a message to all connections.
+~~~
+$this->sendAll($message);
+~~~
+Close current connection.
+~~~
+$this->abort($conn);
 ~~~
 
 

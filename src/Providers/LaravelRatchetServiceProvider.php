@@ -14,11 +14,11 @@ class LaravelRatchetServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('command.ratchet', function () {
+        $this->app->singleton('command.ratchet.serve', function () {
               return new RatchetServerCommand();
         });
 
-        $this->commands('command.ratchet');
+        $this->commands('command.ratchet.serve');
 
         $this->mergeConfigFrom(__DIR__.'/../config/ratchet.php', 'ratchet');
     }
@@ -33,5 +33,15 @@ class LaravelRatchetServiceProvider extends ServiceProvider
         $this->publishes([
              __DIR__.'/../config/ratchet.php' => config_path('ratchet.php'),
          ]);
+    }
+
+    /**
+    * Get the services provided by the provider.
+    *
+    * @return array
+    */
+    public function provides()
+    {
+        return array('command.ratchet.serve');
     }
 }
