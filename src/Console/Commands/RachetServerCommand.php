@@ -3,12 +3,10 @@
 namespace Askedio\LaravelRachet\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
+use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
-use Askedio\LaravelRachet\RachetServer;
+use Symfony\Component\Console\Input\InputOption;
 
 class RachetServerCommand extends Command
 {
@@ -28,12 +26,14 @@ class RachetServerCommand extends Command
 
     /**
      * Server host.
+     *
      * @var string
      */
     protected $host;
 
     /**
      * Server port.
+     *
      * @var int
      */
     protected $port;
@@ -66,8 +66,10 @@ class RachetServerCommand extends Command
 
     /**
      * Get the IO driver.
-     * @param  [type] $driver [description]
-     * @return [type]         [description]
+     *
+     * @param [type] $driver [description]
+     *
+     * @return [type] [description]
      */
     private function getDriver($driver)
     {
@@ -84,8 +86,10 @@ class RachetServerCommand extends Command
 
     /**
      * Get the WsServer driver.
-     * @param  [type] $rachetServer [description]
-     * @return [type]               [description]
+     *
+     * @param [type] $rachetServer [description]
+     *
+     * @return [type] [description]
      */
     private function getWsServerDriver($rachetServer)
     {
@@ -98,8 +102,10 @@ class RachetServerCommand extends Command
 
     /**
      * Return the IoServer factory.
-     * @param  [type] $driver [description]
-     * @return [type]         [description]
+     *
+     * @param [type] $driver [description]
+     *
+     * @return [type] [description]
      */
     private function server($driver)
     {
