@@ -22,13 +22,6 @@ abstract class RatchetServer implements MessageComponentInterface
     protected $console;
 
     /**
-     * Current connection.
-     *
-     * @var [type]
-     */
-    protected $conn;
-
-    /**
      * Set clients and console.
      *
      * @param [type] $console [description]
@@ -50,7 +43,6 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->console->info(sprintf('New connection! (%s)', $conn->resourceId));
-        $this->conn = $conn;
 
         $connections = count($this->clients);
         $this->console->info(sprintf('%d connection%s\n', $connections, $connections == 1 ? '' : 's'));
@@ -109,9 +101,10 @@ abstract class RatchetServer implements MessageComponentInterface
      *
      * @return [type] [description]
      */
-    public function abort()
+    public function abort(ConnectionInterface $conn)
     {
-        $this->conn->close();
+        $this->clients->detach($conn);
+        $conn->close();
     }
 
     /**
@@ -121,9 +114,9 @@ abstract class RatchetServer implements MessageComponentInterface
      *
      * @return [type] [description]
      */
-    public function send($message)
+    public function send(ConnectionInterface $conn, $message)
     {
-        $this->conn->send($message);
+        $conn->send($message);
     }
 
     /**

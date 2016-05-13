@@ -13,12 +13,12 @@ class RatchetServerExample extends RatchetServer
     {
         parent::onMessage($conn, $input);
 
-        $this->send('Hello you.'.PHP_EOL);
+        $this->send($conn, 'Hello you.'.PHP_EOL);
 
         $this->sendAll('Hello everyone.'.PHP_EOL);
 
-        $this->send('Wait, I don\'t know you! Bye bye!'.PHP_EOL);
+        $this->send($conn, 'Wait, I don\'t know you! Bye bye!'.PHP_EOL);
 
-        $this->abort();
+        $this->abort($conn);
     }
 }
