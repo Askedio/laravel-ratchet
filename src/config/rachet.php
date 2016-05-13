@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'class'           => \Askedio\LaravelRachet\RachetServer::class,
+    'class'           => \Askedio\LaravelRachet\RachetServerExample::class,
     'host'            => '0.0.0.0',
     'port'            => '9090',
     'connectionLimit' => false,

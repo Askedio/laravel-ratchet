@@ -28,7 +28,9 @@ php artisan vendor:publish --class=Askedio\LaravelRachet\Providers\LaravelRachet
 
 namespace App;
 
-class RachetServer extends \Askedio\LaravelRache\Contracts\RachetServer
+use Ratchet\ConnectionInterface;
+
+class RachetServer extends \Askedio\LaravelRache\RachetServer
 {
     public function onMessage(ConnectionInterface $conn, $input)
     {
@@ -44,7 +46,7 @@ class RachetServer extends \Askedio\LaravelRache\Contracts\RachetServer
     }
 }
 ~~~
-You'll need to change the class to `App\RachetServer::class` in your command line or config.
+You'll need to change the class to `App\RachetServerExample::class` in your command line or config.
 
 # Serve
 ~~~
@@ -55,7 +57,7 @@ Usage:
 Options:
       --host[=HOST]      Rachet server host [default: "0.0.0.0"]
   -p, --port[=PORT]      Rachet server port [default: "9090"]
-      --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRachet\RachetServer"]
+      --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRachet\RachetServerExample"]
       --driver[=DRIVER]  Rachet connection driver [IoServer|WsServer] [default: "IoServer"]
 ~~~
 
