@@ -44,12 +44,12 @@ class LaravelRatchetServiceProvider extends ServiceProvider
     }
 
     /**
-    * Get the services provided by the provider.
-    *
-    * @return array
-    */
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
     public function provides()
     {
-        return array('command.ratchet.serve');
+        return ['command.ratchet.serve'];
     }
 }

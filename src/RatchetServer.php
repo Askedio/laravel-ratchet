@@ -2,9 +2,9 @@
 
 namespace Askedio\LaravelRatchet;
 
+use GrahamCampbell\Throttle\Facades\Throttle;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
-use GrahamCampbell\Throttle\Facades\Throttle;
 
 abstract class RatchetServer implements MessageComponentInterface
 {
@@ -24,18 +24,21 @@ abstract class RatchetServer implements MessageComponentInterface
 
     /**
      * Total connections.
+     *
      * @var [type]
      */
     protected $connections;
 
     /**
      * Current connection.
+     *
      * @var ConnectionInterface
      */
     protected $conn;
 
     /**
      * Throttled.
+     *
      * @var [type]
      */
     protected $throttled = false;
@@ -80,6 +83,7 @@ abstract class RatchetServer implements MessageComponentInterface
 
     /**
      * Throttle connections.
+     *
      * @return [type] [description]
      */
     private function throttle()
@@ -96,6 +100,7 @@ abstract class RatchetServer implements MessageComponentInterface
 
     /**
      * Limit connections.
+     *
      * @return [type] [description]
      */
     private function limit()
@@ -111,16 +116,18 @@ abstract class RatchetServer implements MessageComponentInterface
 
     /**
      * Check if the called function is throttled.
-     * @param  [type]  $conn    [description]
-     * @param  [type]  $setting [description]
-     * @return boolean          [description]
+     *
+     * @param [type] $conn    [description]
+     * @param [type] $setting [description]
+     *
+     * @return bool [description]
      */
     private function isThrottled($conn, $setting)
     {
         $connectionThrottle = explode(':', config(sprintf('ratchet.throttle.%s', $setting)));
 
         return !Throttle::attempt([
-          'ip' => $conn->remoteAddress,
+          'ip'    => $conn->remoteAddress,
           'route' => $setting,
         ], $connectionThrottle[0], $connectionThrottle[1]);
     }
@@ -147,7 +154,6 @@ abstract class RatchetServer implements MessageComponentInterface
                 $this->abort($conn);
             }
         }
-
     }
 
     /**
