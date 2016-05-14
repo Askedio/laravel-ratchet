@@ -13,6 +13,8 @@ class RatchetServerExample extends RatchetServer implements Contracts\RatchetSer
     {
         parent::onMessage($conn, $input);
 
-        $this->send($conn, sprintf('- %s', $input));
+        if (!$this->throttled) {
+            $this->send($conn, sprintf('- %s', $input));
+        }
     }
 }

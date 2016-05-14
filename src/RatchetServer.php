@@ -4,6 +4,7 @@ namespace Askedio\LaravelRatchet;
 
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use GrahamCampbell\Throttle\Facades\Throttle;
 
 abstract class RatchetServer implements MessageComponentInterface
 {
@@ -20,6 +21,24 @@ abstract class RatchetServer implements MessageComponentInterface
      * @var [type]
      */
     protected $console;
+
+    /**
+     * Total connections.
+     * @var [type]
+     */
+    protected $connections;
+
+    /**
+     * Current connection.
+     * @var ConnectionInterface
+     */
+    protected $conn;
+
+    /**
+     * Throttled.
+     * @var [type]
+     */
+    protected $throttled = false;
 
     /**
      * Set clients and console.
@@ -41,21 +60,69 @@ abstract class RatchetServer implements MessageComponentInterface
      */
     public function onOpen(ConnectionInterface $conn)
     {
-        $this->clients->attach($conn);
-        $this->console->info(sprintf('Connected: %d', $conn->resourceId));
+        $this->conn = $conn;
 
-        $connections = count($this->clients);
-        $this->console->info(sprintf('%d %s', $connections, str_plural('connection', $connections)));
+        $this->attach()->throttle()->limit();
 
-        if ($connectionLimit = config('ratchet.connectionLimit')) {
-            if ($connections - 1 >= $connectionLimit) {
-                $this->console->info(sprintf('To many connections: %d of %d', $connections - 1, $connectionLimit));
-                $conn->send('to_many_connections');
-                $conn->close();
-            }
+        event('ratchetOpen', $this->conn);
+    }
+
+    private function attach()
+    {
+        $this->clients->attach($this->conn);
+        $this->console->info(sprintf('Connected: %d', $this->conn->resourceId));
+
+        $this->connections = count($this->clients);
+        $this->console->info(sprintf('%d %s', $this->connections, str_plural('connection', $this->connections)));
+
+        return $this;
+    }
+
+    /**
+     * Throttle connections.
+     * @return [type] [description]
+     */
+    private function throttle()
+    {
+        if ($this->isThrottled($this->conn, 'onOpen')) {
+            $this->console->info(sprintf('Connection throttled: %d', $this->conn->resourceId));
+            $this->conn->send(trans('ratchet::messages.toManyConnectionAttempts'));
+            $this->throttled = true;
+            $this->conn->close();
         }
 
-        event('ratchetOpen', $conn);
+        return $this;
+    }
+
+    /**
+     * Limit connections.
+     * @return [type] [description]
+     */
+    private function limit()
+    {
+        if ($connectionLimit = config('ratchet.connectionLimit') && $this->connections - 1 >= $connectionLimit) {
+            $this->console->info(sprintf('To many connections: %d of %d', $this->connections - 1, $connectionLimit));
+            $this->conn->send(trans('ratchet::messages.toManyConnections'));
+            $this->conn->close();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if the called function is throttled.
+     * @param  [type]  $conn    [description]
+     * @param  [type]  $setting [description]
+     * @return boolean          [description]
+     */
+    private function isThrottled($conn, $setting)
+    {
+        $connectionThrottle = explode(':', config(sprintf('ratchet.throttle.%s', $setting)));
+
+        return !Throttle::attempt([
+          'ip' => $conn->remoteAddress,
+          'route' => $setting,
+        ], $connectionThrottle[0], $connectionThrottle[1]);
     }
 
     /**
@@ -70,6 +137,17 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, $input));
         event('ratchetMessage', [$conn, $input]);
+
+        if ($this->isThrottled($conn, 'onMessage')) {
+            $this->console->info(sprintf('Message throttled: %d', $conn->resourceId));
+            $this->send($conn, trans('ratchet::messages.toManyMessages'));
+            $this->throttled = true;
+
+            if (config('ratchet.abortOnMessageThrottle')) {
+                $this->abort($conn);
+            }
+        }
+
     }
 
     /**

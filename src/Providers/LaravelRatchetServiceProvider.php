@@ -14,6 +14,8 @@ class LaravelRatchetServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(\GrahamCampbell\Throttle\ThrottleServiceProvider::class);
+
         $this->app->singleton('command.ratchet.serve', function () {
               return new RatchetServerCommand();
         });
@@ -30,9 +32,15 @@ class LaravelRatchetServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'ratchet');
+
+        $this->publishes([
+            __DIR__.'/../lang' => resource_path('lang/askedio/ratchet'),
+        ]);
+
         $this->publishes([
              __DIR__.'/../config/ratchet.php' => config_path('ratchet.php'),
-         ]);
+        ]);
     }
 
     /**

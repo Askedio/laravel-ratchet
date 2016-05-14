@@ -1,6 +1,14 @@
 ![Header](http://i.imgur.com/H1OQeOV.png)
 
-This package provides the artisan command `ratchet:serve` that will start a [Ratchet](http://socketo.me/) [Io Server](http://socketo.me/docs/server) or [Web Socket](http://socketo.me/docs/websocket) with the `MessageComponentInterface` class of your making. I've added a few functions like `abort()` `send()` and `sendAll()` to make some common tasks easier.
+This package provides the artisan command `ratchet:serve` that will start a [Ratchet](http://socketo.me/) [Io Server](http://socketo.me/docs/server),  [Web Socket](http://socketo.me/docs/websocket),  or [Wamp Server](http://socketo.me/docs/wamp) with the class of your making. Included are a few functions like `abort()` `send()` and `sendAll()` to make some common tasks easier.
+
+# Supports
+* WaServer, WampServer & IoServer
+* IpBlackList
+* Connection throttling
+* Message throttling
+
+
 
 
 # Installation
@@ -15,7 +23,7 @@ Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
 ~~~
 
 # Example
-`RatchetServerExample.php` is the default class used for the Ratchet Server, it's really simple. Here is a copy you could use.
+[RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetServerExample.php) is the default class used for the Ratchet Server, a basic echo server. Here is another example:
 ~~~
 <?php
 
@@ -29,13 +37,15 @@ class RatchetServer extends \Askedio\LaravelRatchet\RatchetServer
     {
         parent::onMessage($conn, $input);
 
-        $this->send($conn, 'Hello you.');
+        if (!$this->throttled) {
+            $this->send($conn, 'Hello you.');
 
-        $this->sendAll('Hello everyone.');
+            $this->sendAll('Hello everyone.');
 
-        $this->send($conn, 'Wait, I don\'t know you! Bye bye!');
+            $this->send($conn, 'Wait, I don\'t know you! Bye bye!');
 
-        $this->abort($conn);
+            $this->abort($conn);
+        }
     }
 }
 ~~~
@@ -69,7 +79,11 @@ php artisan vendor:publish --class=Askedio\LaravelRatchet\Providers\LaravelRatch
 * host: The host to listen on.
 * port: The port to listen on.
 * connectionLimit: The total number of connections allowed (RatchetServer only).
-* blackList: The hosts to ban using [IpBlackList](http://socketo.me/docs/black).
+* throttle: Throttle connections and messages with [Throttle](https://github.com/GrahamCampbell/Laravel-Throttle)
+  * onOpen: limit:delay for connections.
+  * onMessage: limit:delay for messages.
+* abortOnMessageThrottle:
+* blackList: Collection or Model of the hosts to ban using [IpBlackList](http://socketo.me/docs/black).
 
 # Options
 Send a message to the current connection.
@@ -84,7 +98,6 @@ Close current connection.
 ~~~
 $this->abort($conn);
 ~~~
-
 
 # Testing
 See contributing.
