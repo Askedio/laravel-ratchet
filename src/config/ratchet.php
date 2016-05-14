@@ -16,9 +16,9 @@ return [
     'port'            => '9090',
     'connectionLimit' => false,
     'throttle'        => [
-                            'onOpen' => '5:1',
+                            'onOpen'    => '5:1',
                             'onMessage' => '20:1',
                          ],
     'abortOnMessageThrottle' => false,
-    'blackList'       => collect([]),
+    'blackList'              => collect([]),
 ];

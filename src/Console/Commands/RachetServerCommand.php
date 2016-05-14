@@ -5,12 +5,12 @@ namespace Askedio\LaravelRatchet\Console\Commands;
 use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
-use Ratchet\WebSocket\WsServer;
-use Ratchet\Wamp\WampServer;
-use Symfony\Component\Console\Input\InputOption;
 use Ratchet\Server\IpBlackList;
+use Ratchet\Wamp\WampServer;
+use Ratchet\WebSocket\WsServer;
+use Symfony\Component\Console\Input\InputOption;
 
-class RatchetServerCommand extends Command
+class RachetServerCommand extends Command
 {
     /**
      * The console command name.
@@ -81,7 +81,7 @@ class RatchetServerCommand extends Command
 
         foreach (config('ratchet.blackList')->all() as $host) {
             $ratchetServer->blockAddress($host);
-        };
+        }
 
         if ($driver == 'WsServer') {
             return $this->getWsServerDriver($ratchetServer);
