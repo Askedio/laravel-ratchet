@@ -10,7 +10,7 @@ use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Input\InputOption;
 
-class RachetServerCommand extends Command
+class RatchetServerCommand extends Command
 {
     /**
      * The console command name.
