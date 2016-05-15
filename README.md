@@ -122,7 +122,7 @@ Replace `/home/forge/app.com/` with the path to your application.
 sudo cat <<EOF > /etc/supervisor/conf.d/laravel-ratchet.conf
 [program:laravel-ratchet]
 process_name=%(program_name)s_%(process_num)02d
-command=php /home/forge/app.com/artisan ratchet:serve
+command=php /home/forge/app.com/artisan ratchet:serve -q
 autostart=true
 autorestart=true
 user=vagrant
