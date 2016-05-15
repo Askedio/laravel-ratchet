@@ -14,24 +14,25 @@ This package provides the artisan command `ratchet:serve` that will start a [Rat
 # Installation
 Install with composer
 ~~~
-composer require askedio/laravel-ratchet:dev-master
+composer require askedio/laravel-ratchet
 ~~~
 
-Register in the providers array in `config/app.php`
+Register the `provider` in `config/app.php`.
 ~~~
 Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
 ~~~
 
 # Example
-[RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetServerExample.php) is the default class used for the Ratchet Server, a basic echo server. Here is another example:
+[RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetServerExample.php), a basic echo server, is used when you do not define a class. Here is another example:
 ~~~
 <?php
 
 namespace App;
 
 use Ratchet\ConnectionInterface;
+use Askedio\LaravelRatchet\RatchetServer;
 
-class RatchetServer extends \Askedio\LaravelRatchet\RatchetServer
+class RatchetServer extends RatchetServer
 {
     public function onMessage(ConnectionInterface $conn, $input)
     {
@@ -51,10 +52,15 @@ class RatchetServer extends \Askedio\LaravelRatchet\RatchetServer
 ~~~
 You'll need to change the class to `App\RatchetServer::class` in your command line or config.
 ~~~
-php artisan ratchet:serve --class=App\RatchetServer::class
+php artisan ratchet:serve --class="\App\RatchetServer::class"
 ~~~
 
 # Command Line
+To use the default values from the configuration simple run the command as follows:
+~~~
+php artisan ratchet:serve
+~~~
+You can also define configuration items on the command line:
 ~~~
 php artisan ratchet:serve  --help
 
@@ -70,20 +76,20 @@ Options:
 
 
 # Configuration
-You can configure the default host, port, class and max connections in `config/ratchet.php`, publish the config to make adjustments.
+There are several configuration values that you will want to change. Publish the configuration then you can edit `config/ratchet.php`.
 ~~~
-php artisan vendor:publish --class=Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class
+php artisan vendor:publish --class="\Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class"
 ~~~
 ### Configuration Options
-* class: Your MessageComponentInterface or WampServerInterface class (or the packages wrappers).
-* host: The host to listen on.
-* port: The port to listen on.
-* connectionLimit: The total number of connections allowed (RatchetServer only).
-* throttle: Throttle connections and messages with [Throttle](https://github.com/GrahamCampbell/Laravel-Throttle)
-  * onOpen: limit:delay for connections.
-  * onMessage: limit:delay for messages.
-* abortOnMessageThrottle:
-* blackList: Collection or Model of the hosts to ban using [IpBlackList](http://socketo.me/docs/black).
+* **class**: Your MessageComponentInterface or WampServerInterface class.
+* **host**: The host to listen on.
+* **port**: The port to listen on.
+* **connectionLimit**: The total number of connections allowed (RatchetServer only).
+* **throttle**: [Throttle](https://github.com/GrahamCampbell/Laravel-Throttle) connections and messages.
+  * **onOpen**: limit:delay for connections.
+  * **onMessage**: limit:delay for messages.
+* **abortOnMessageThrottle**: disconnect client when message throttle triggered.
+* **blackList**: Collection or Model of the hosts to ban using [IpBlackList](http://socketo.me/docs/black).
 
 # Options
 Send a message to the current connection.
@@ -98,6 +104,42 @@ Close current connection.
 ~~~
 $this->abort($conn);
 ~~~
+
+# Supervisor Configuration
+> Supervisor is a client/server system that allows its users to control a number of processes on UNIX-like operating systems.
+
+Things crash and long running processes need to be monitored. We can use [Supervisor](http://supervisord.org/index.html) to help with this.
+
+
+### Install supervisor.
+~~~
+sudo apt-get install supervisor
+~~~
+### Create the config.
+
+Replace `/home/forge/app.com/` with the path to your application.
+~~~
+sudo cat <<EOF > /etc/supervisor/conf.d/laravel-ratchet.conf
+[program:laravel-ratchet]
+process_name=%(program_name)s_%(process_num)02d
+command=php /home/forge/app.com/artisan ratchet:serve
+autostart=true
+autorestart=true
+user=vagrant
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/home/forge/app.com/ratchet.log
+EOF
+~~~
+### Enable & Start.
+~~~
+sudo supervisorctl reread
+
+sudo supervisorctl update
+
+supervisorctl start laravel-ratchet:*
+~~~
+
 
 # Testing
 See contributing.
