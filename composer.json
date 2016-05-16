@@ -8,7 +8,9 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "cboden/ratchet": "^0.3.4",
-        "graham-campbell/throttle": "^5.2"
+        "graham-campbell/throttle": "^5.2",
+        "predis/predis": "^1.0",
+        "predis/predis-async": "dev-master"
      },
     "autoload": {
         "psr-4": {

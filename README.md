@@ -50,9 +50,9 @@ class RatchetServer extends RatchetServer
     }
 }
 ~~~
-You'll need to change the class to `App\RatchetServer::class` in your command line or config.
+You'll need to change the class to in your command line or config.
 ~~~
-php artisan ratchet:serve --class="\App\RatchetServer::class"
+php artisan ratchet:serve --class="App\RatchetServer:"
 ~~~
 
 # Command Line

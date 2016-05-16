@@ -9,6 +9,8 @@ use Ratchet\Server\IpBlackList;
 use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Input\InputOption;
+use React\EventLoop\Factory as LoopFactory;
+
 
 class RatchetServerCommand extends Command
 {
@@ -75,9 +77,9 @@ class RatchetServerCommand extends Command
      */
     private function getDriver($driver)
     {
-        $class = $this->option('class');
+        //$class = $this->option('class');
 
-        $ratchetServer = new IpBlackList(new $class($this));
+        //$ratchetServer = new IpBlackList(new $class($this));
 
         foreach (config('ratchet.blackList')->all() as $host) {
             $ratchetServer->blockAddress($host);
@@ -87,9 +89,6 @@ class RatchetServerCommand extends Command
             return $this->getWsServerDriver($ratchetServer);
         }
 
-        if ($driver == 'WampServer') {
-            return $this->getWampServerDriver($ratchetServer);
-        }
 
         return $ratchetServer;
     }
@@ -135,6 +134,33 @@ class RatchetServerCommand extends Command
      */
     private function server($driver)
     {
+        if ($driver == 'WampServer') {
+            $class = $this->option('class');
+            $pusher = new \Askedio\LaravelRatchet\PusherServer();
+
+            $loop   = \React\EventLoop\Factory::create();
+            $cb = array($pusher, 'timedCallback');
+            $loop->addPeriodicTimer(10, function() use ($cb){
+              return $cb;
+            });
+            $client = new \Predis\Async\Client('tcp://127.0.0.1:6379', $loop);
+            $client->connect(array($pusher, 'init'));
+
+            $webSock = new \React\Socket\Server($loop);
+            $webSock->listen(8080, '0.0.0.0');
+            $webServer = new \Ratchet\Server\IoServer(
+                new \Ratchet\WebSocket\WsServer(
+                    new \Ratchet\Wamp\WampServer(
+                        $pusher
+                    )
+                ),
+                $webSock
+            );
+
+            return $loop;
+        }
+
+
         return IoServer::factory(
             $this->getDriver($driver),
             $this->port,
