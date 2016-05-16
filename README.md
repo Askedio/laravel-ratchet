@@ -37,9 +37,9 @@ Starting WampServer server on: 0.0.0.0:8080
 Starting ZMQ server on: 127.0.0.1:5555
 ~~~
 
-Create your own class based on [RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/Pusher.php).
+Create your own class based on or extending [RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/Pusher.php).
 
-To insert data to ZMQ check out [the example](http://socketo.me/docs/push#editblogsubmission).
+Insert data to ZMQ using [the example](http://socketo.me/docs/push#editblogsubmission) provided by Ratchet.
 
 
 # Socket Server
@@ -78,7 +78,7 @@ php artisan ratchet:serve --driver=IoServer --class="App\RatchetServer:"
 ~~~
 
 # Command Line
-To use the default values from the configuration simple run the command as follows:
+To use the default values from the configuration run the command as follows:
 ~~~
 php artisan ratchet:serve
 ~~~
@@ -94,6 +94,7 @@ Options:
   -p, --port[=PORT]      Ratchet server port [default: "9090"]
       --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
       --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer] [default: "IoServer"]
+      ...
 ~~~
 
 
