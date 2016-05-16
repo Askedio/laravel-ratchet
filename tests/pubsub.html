@@ -1,0 +1,14 @@
+<script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+<script>
+    var conn = new ab.Session('ws://192.168.10.10:8080',
+        function() {
+            conn.subscribe('kittensCategory', function(topic, data) {
+                console.log('New article published to category "' + topic + '" : ' + data);
+            });
+        },
+        function() {
+            console.warn('WebSocket connection closed');
+        },
+        {'skipSubprotocolCheck': true}
+    );
+</script>

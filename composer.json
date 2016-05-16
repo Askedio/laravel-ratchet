@@ -4,13 +4,14 @@
     "keywords": ["laravel"],
     "license": "MIT",
     "type": "library",
+    "minimum-stability": "dev",
+
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "cboden/ratchet": "^0.3.4",
         "graham-campbell/throttle": "^5.2",
-        "predis/predis": "^1.0",
-        "predis/predis-async": "dev-master"
+        "react/zmq": "0.2.*|0.3.*"
      },
     "autoload": {
         "psr-4": {
