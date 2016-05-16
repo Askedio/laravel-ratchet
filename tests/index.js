@@ -3,12 +3,12 @@
  * - A simple echo test.
  */
 
+
 var WebSocket = require('ws');
-var ws = new WebSocket('ws://0.0.0.0:9090');
+var ws = new WebSocket('ws://0.0.0.0:8080');
 
 ws.on('open', function open() {
   console.log('connected');
-  ws.send(Date.now().toString(), {mask: true});
 });
 
 ws.on('close', function close() {
@@ -22,3 +22,5 @@ ws.on('message', function message(data, flags) {
     ws.send(Date.now().toString(), {mask: true});
   }, 500);
 });
+
+

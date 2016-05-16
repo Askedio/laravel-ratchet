@@ -3,8 +3,8 @@
 namespace Askedio\LaravelRatchet;
 
 /**
- * Quick cp of Ratchets Pusher example.
+ * Pub/sub socket server example.
  */
-class PusherExample extends PusherServer
+class PusherExample extends Pusher
 {
 }

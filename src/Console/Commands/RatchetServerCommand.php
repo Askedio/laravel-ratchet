@@ -10,6 +10,8 @@ use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Input\InputOption;
 
+
+
 class RatchetServerCommand extends Command
 {
     /**
@@ -61,7 +63,7 @@ class RatchetServerCommand extends Command
 
         $this->port = intval($this->option('port'));
 
-        $this->info(sprintf('Starting server on: %s:%s', $this->host, $this->port));
+        $this->info(sprintf('Starting %s server on: %s:%d', $this->option('driver'), $this->host, $this->port));
 
         $this->server($this->option('driver'))->run();
     }
@@ -85,10 +87,6 @@ class RatchetServerCommand extends Command
 
         if ($driver == 'WsServer') {
             return $this->getWsServerDriver($ratchetServer);
-        }
-
-        if ($driver == 'WampServer') {
-            return $this->getWampServerDriver($ratchetServer);
         }
 
         return $ratchetServer;
@@ -117,13 +115,40 @@ class RatchetServerCommand extends Command
      *
      * @return [type] [description]
      */
-    private function getWampServerDriver($ratchetServer)
+    private function startWampServer()
     {
-        return $this->getWsServerDriver(
-            new WampServer(
-                $ratchetServer
-            )
+
+        $loop   = \React\EventLoop\Factory::create();
+
+        $class = $this->option('class');
+
+        $ratchetServer = new $class($this);
+
+        $this->info(sprintf('Starting ZMQ server on: %s:%s', config('ratchet.zmq.host'), config('ratchet.zmq.port')));
+
+        $context = new \React\ZMQ\Context($loop);
+        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
+        $pull->bind(sprintf('tcp://%s:%d', config('ratchet.zmq.host'), config('ratchet.zmq.port')));
+
+         $pull->on('message', function($message) use ($ratchetServer) {
+             $ratchetServer->onEntry($message);
+         });
+
+
+        $webSock = new \React\Socket\Server($loop);
+        $webSock->listen($this->port, $this->host);
+        $webServer = new \Ratchet\Server\IoServer(
+            new \Ratchet\Http\HttpServer(
+                new \Ratchet\WebSocket\WsServer(
+                    new \Ratchet\Wamp\WampServer(
+                        $ratchetServer
+                    )
+                )
+            ),
+            $webSock
         );
+
+        return $loop;
     }
 
     /**
@@ -135,6 +160,11 @@ class RatchetServerCommand extends Command
      */
     private function server($driver)
     {
+
+        if ($driver == 'WampServer') {
+            return $this->startWampServer();
+        }
+
         return IoServer::factory(
             $this->getDriver($driver),
             $this->port,
@@ -151,9 +181,9 @@ class RatchetServerCommand extends Command
     {
         return [
             ['host', null, InputOption::VALUE_OPTIONAL, 'Ratchet server host', config('ratchet.host', '0.0.0.0')],
-            ['port', 'p', InputOption::VALUE_OPTIONAL, 'Ratchet server port', config('ratchet.port', 9090)],
+            ['port', 'p', InputOption::VALUE_OPTIONAL, 'Ratchet server port', config('ratchet.port', 8080)],
             ['class', null, InputOption::VALUE_OPTIONAL, 'Class that implements MessageComponentInterface.', config('ratchet.class')],
-            ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer|WampServer]', 'WsServer'],
+            ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer|WampServer]', 'WampServer'],
         ];
     }
 }

@@ -11,9 +11,9 @@ return [
     |
     */
 
-    'class'           => \Askedio\LaravelRatchet\RatchetServerExample::class,
+    'class'           => \Askedio\LaravelRatchet\PusherExample::class,
     'host'            => '0.0.0.0',
-    'port'            => '9090',
+    'port'            => '8080',
     'connectionLimit' => false,
     'throttle'        => [
                             'onOpen'    => '5:1',
@@ -21,4 +21,8 @@ return [
                          ],
     'abortOnMessageThrottle' => false,
     'blackList'              => collect([]),
+    'zmq'   => [
+        'host' => '127.0.0.1',
+        'port' => 5555,
+      ],
 ];

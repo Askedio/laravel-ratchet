@@ -21,9 +21,31 @@ Register the `provider` in `config/app.php`.
 ~~~
 Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
 ~~~
+Install [ZMQ](http://zeromq.org/intro:get-the-software) to use the `WampServer` driver.
 
-# Example
-[RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetServerExample.php), a basic echo server, is used when you do not define a class. Here is another example:
+~~~
+apt-get install php7.0-zmq
+~~~
+
+# Push Server
+The default driver will create a simple Push server based on [Ratchets example](http://socketo.me/docs/push).
+
+~~~
+php artisan ratchet:serve
+
+Starting WampServer server on: 0.0.0.0:8080
+Starting ZMQ server on: 127.0.0.1:5555
+~~~
+
+Create your own class based on [RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/Pusher.php).
+
+To insert data to ZMQ check out [the example](http://socketo.me/docs/push#editblogsubmission).
+
+
+# Socket Server
+Use the IoServer `driver` and the [RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetServerExample.php) `class` to create a simple socket server.
+
+Here is an example you could use in your `App`.
 ~~~
 <?php
 
@@ -50,9 +72,9 @@ class RatchetServer extends RatchetServer
     }
 }
 ~~~
-You'll need to change the class to `App\RatchetServer::class` in your command line or config.
+You'll need to change the class to in your command line or config.
 ~~~
-php artisan ratchet:serve --class="\App\RatchetServer::class"
+php artisan ratchet:serve --driver=IoServer --class="App\RatchetServer:"
 ~~~
 
 # Command Line
