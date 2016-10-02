@@ -74,7 +74,7 @@ class RatchetServer extends RatchetServer
 ~~~
 You'll need to change the class to in your command line or config.
 ~~~
-php artisan ratchet:serve --driver=IoServer --class="App\RatchetServer:"
+php artisan ratchet:serve --driver=IoServer --class="App\RatchetServer::class"
 ~~~
 
 # Command Line
@@ -93,7 +93,7 @@ Options:
       --host[=HOST]      Ratchet server host [default: "0.0.0.0"]
   -p, --port[=PORT]      Ratchet server port [default: "9090"]
       --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
-      --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer] [default: "IoServer"]
+      --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer|WampServer] [default: "WampServer"]
       ...
 ~~~
 
@@ -101,7 +101,7 @@ Options:
 # Configuration
 There are several configuration values that you will want to change. Publish the configuration then you can edit `config/ratchet.php`.
 ~~~
-php artisan vendor:publish --class="\Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class"
+php artisan vendor:publish
 ~~~
 ### Configuration Options
 * **class**: Your MessageComponentInterface or WampServerInterface class.

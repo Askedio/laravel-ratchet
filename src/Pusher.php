@@ -5,14 +5,12 @@ namespace Askedio\LaravelRatchet;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 
-class Pusher implements WampServerInterface {
-
-
-    public $subscribedTopics = array();
+class Pusher implements WampServerInterface
+{
+    public $subscribedTopics = [];
 
 
     protected $console = false;
-
 
     public function __construct($console)
     {
@@ -22,7 +20,8 @@ class Pusher implements WampServerInterface {
     /**
      * @param string JSON'ified string we'll receive from ZeroMQ
      */
-    public function onEntry($entry) {
+    public function onEntry($entry)
+    {
         $entryData = json_decode($entry, true);
 
         if (!array_key_exists($entryData['category'], $this->subscribedTopics)) {
@@ -40,7 +39,8 @@ class Pusher implements WampServerInterface {
      * @param \Ratchet\ConnectionInterface $conn
      * @param string|Topic                 $topic The topic to subscribe to
      */
-    public function onSubscribe(ConnectionInterface $conn, $topic) {
+    public function onSubscribe(ConnectionInterface $conn, $topic)
+    {
         $this->console->info("onSubscribe: {$conn->WAMP->sessionId} topic: $topic {$topic->count()}");
 
         if (!array_key_exists($topic->getId(), $this->subscribedTopics)) {
@@ -49,14 +49,14 @@ class Pusher implements WampServerInterface {
         }
     }
 
-
     /**
      * A request to unsubscribe from a topic has been made.
      *
      * @param \Ratchet\ConnectionInterface $conn
      * @param string|Topic                 $topic The topic to unsubscribe from
      */
-    public function onUnSubscribe(ConnectionInterface $conn, $topic) {
+    public function onUnSubscribe(ConnectionInterface $conn, $topic)
+    {
         $this->console->info("onUnSubscribe: topic: $topic {$topic->count()}");
     }
 
@@ -67,7 +67,8 @@ class Pusher implements WampServerInterface {
      *
      * @throws \Exception
      */
-    public function onOpen(ConnectionInterface $conn) {
+    public function onOpen(ConnectionInterface $conn)
+    {
         $this->console->info("onOpen ({$conn->WAMP->sessionId})");
     }
 
@@ -78,10 +79,10 @@ class Pusher implements WampServerInterface {
      *
      * @throws \Exception
      */
-    public function onClose(ConnectionInterface $conn) {
+    public function onClose(ConnectionInterface $conn)
+    {
         $this->console->info("onClose ({$conn->WAMP->sessionId})");
     }
-
 
     /**
      * An RPC call has been received.
@@ -91,11 +92,11 @@ class Pusher implements WampServerInterface {
      * @param string|Topic                 $topic  The topic to execute the call against
      * @param array                        $params Call parameters received from the client
      */
-    public function onCall(ConnectionInterface $conn, $id, $topic, array $params) {
-        $this->console->info("onCall");
+    public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
+    {
+        $this->console->info('onCall');
         $conn->callError($id, $topic, 'You are not allowed to make calls')->close();
     }
-
 
     /**
      * A client is attempting to publish content to a subscribed connections on a URI.
@@ -106,8 +107,9 @@ class Pusher implements WampServerInterface {
      * @param array                        $exclude  A list of session IDs the message should be excluded from (blacklist)
      * @param array                        $eligible A list of session Ids the message should be send to (whitelist)
      */
-    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible) {
-        $this->console->info("onPublish");
+    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
+    {
+        $this->console->info('onPublish');
     }
 
     /**
@@ -119,7 +121,8 @@ class Pusher implements WampServerInterface {
      *
      * @throws \Exception
      */
-    public function onError(ConnectionInterface $conn, \Exception $e) {
-        $this->console->info("onError" . $e->getMessage());
+    public function onError(ConnectionInterface $conn, \Exception $e)
+    {
+        $this->console->info('onError'.$e->getMessage());
     }
 }
