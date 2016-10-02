@@ -93,7 +93,7 @@ Options:
       --host[=HOST]      Ratchet server host [default: "0.0.0.0"]
   -p, --port[=PORT]      Ratchet server port [default: "9090"]
       --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
-      --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer] [default: "IoServer"]
+      --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer|WampServer] [default: "WampServer"]
       ...
 ~~~
 
