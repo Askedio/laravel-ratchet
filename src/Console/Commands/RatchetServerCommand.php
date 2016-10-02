@@ -10,8 +10,6 @@ use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Input\InputOption;
 
-
-
 class RatchetServerCommand extends Command
 {
     /**
@@ -117,8 +115,7 @@ class RatchetServerCommand extends Command
      */
     private function startWampServer()
     {
-
-        $loop   = \React\EventLoop\Factory::create();
+        $loop = \React\EventLoop\Factory::create();
 
         $class = $this->option('class');
 
@@ -130,9 +127,9 @@ class RatchetServerCommand extends Command
         $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
         $pull->bind(sprintf('tcp://%s:%d', config('ratchet.zmq.host'), config('ratchet.zmq.port')));
 
-         $pull->on('message', function($message) use ($ratchetServer) {
-             $ratchetServer->onEntry($message);
-         });
+        $pull->on('message', function ($message) use ($ratchetServer) {
+            $ratchetServer->onEntry($message);
+        });
 
 
         $webSock = new \React\Socket\Server($loop);
@@ -160,7 +157,6 @@ class RatchetServerCommand extends Command
      */
     private function server($driver)
     {
-
         if ($driver == 'WampServer') {
             return $this->startWampServer();
         }

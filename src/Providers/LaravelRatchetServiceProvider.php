@@ -17,7 +17,7 @@ class LaravelRatchetServiceProvider extends ServiceProvider
         $this->app->register(\GrahamCampbell\Throttle\ThrottleServiceProvider::class);
 
         $this->app->singleton('command.ratchet.serve', function () {
-              return new RatchetServerCommand();
+            return new RatchetServerCommand();
         });
 
         $this->commands('command.ratchet.serve');
