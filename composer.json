@@ -6,8 +6,8 @@
     "type": "library",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
-        "cboden/ratchet": "^0.3.4",
+        "laravel/framework": "5.3.*",
+        "cboden/ratchet": "^0.3",
         "graham-campbell/throttle": "^5.2",
         "react/zmq": "0.2.*|0.3.*"
      },
