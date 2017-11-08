@@ -137,8 +137,7 @@ class RatchetServerCommand extends Command
         });
 
 
-        $webSock = new \React\Socket\Server($loop);
-        $webSock->listen($this->port, $this->host);
+        $webSock = new \React\Socket\Server($this->host.':'.$this->port, $loop);
         $webServer = new \Ratchet\Server\IoServer(
             new \Ratchet\Http\HttpServer(
                 new \Ratchet\WebSocket\WsServer(
