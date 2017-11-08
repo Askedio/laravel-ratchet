@@ -11,10 +11,17 @@
         "cboden/ratchet": "^0.4",
         "graham-campbell/throttle": "^6.0",
         "react/zmq": "0.2.*|0.3.*"
-     },
+    },
     "autoload": {
         "psr-4": {
             "Askedio\\LaravelRatchet\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Askedio\\LaravelRatchet\\Providers\\LaravelRatchetServiceProvider"
+            ]
         }
     }
 }
