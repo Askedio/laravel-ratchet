@@ -124,10 +124,14 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         $connectionThrottle = explode(':', config(sprintf('ratchet.throttle.%s', $setting)));
 
-        return !Throttle::attempt([
-          'ip'    => $conn->remoteAddress,
-          'route' => $setting,
-        ], $connectionThrottle[0], $connectionThrottle[1]);
+        return !Throttle::attempt(
+            [
+                'ip'    => $conn->remoteAddress,
+                'route' => $setting,
+            ],
+            (int) $connectionThrottle[0],
+            (int) $connectionThrottle[1]
+        );
     }
 
     /**
