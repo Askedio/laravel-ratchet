@@ -22,7 +22,8 @@ return [
     'abortOnMessageThrottle' => false,
     'blackList'              => collect([]),
     'zmq'                    => [
-        'host' => '127.0.0.1',
-        'port' => 5555,
+        'host'   => '127.0.0.1',
+        'port'   => 5555,
+        'method' => \ZMQ::SOCKET_PULL,
     ],
 ];

@@ -2,11 +2,11 @@
 
 namespace Askedio\LaravelRatchet;
 
-use GrahamCampbell\Throttle\Facades\Throttle;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use GrahamCampbell\Throttle\Facades\Throttle;
 
-abstract class RatchetServer implements MessageComponentInterface
+abstract class RatchetWsServer implements MessageComponentInterface
 {
     /**
      * Clients.
@@ -88,7 +88,7 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         if ($this->isThrottled($this->conn, 'onOpen')) {
             $this->console->info(sprintf('Connection throttled: %d', $this->conn->resourceId));
-            $this->conn->send(trans('ratchet::messages.toManyConnectionAttempts'));
+            $this->conn->send(trans('ratchet::messages.tooManyConnectionAttempts'));
             $this->throttled = true;
             $this->conn->close();
         }
@@ -105,7 +105,7 @@ abstract class RatchetServer implements MessageComponentInterface
     {
         if ($connectionLimit = config('ratchet.connectionLimit') && $this->connections - 1 >= $connectionLimit) {
             $this->console->info(sprintf('To many connections: %d of %d', $this->connections - 1, $connectionLimit));
-            $this->conn->send(trans('ratchet::messages.toManyConnections'));
+            $this->conn->send(trans('ratchet::messages.tooManyConnections'));
             $this->conn->close();
         }
 
@@ -148,7 +148,7 @@ abstract class RatchetServer implements MessageComponentInterface
 
         if ($this->isThrottled($conn, 'onMessage')) {
             $this->console->info(sprintf('Message throttled: %d', $conn->resourceId));
-            $this->send($conn, trans('ratchet::messages.toManyMessages'));
+            $this->send($conn, trans('ratchet::messages.tooManyMessages'));
             $this->throttled = true;
 
             if (config('ratchet.abortOnMessageThrottle')) {
