@@ -244,6 +244,10 @@ class RatchetServerCommand extends Command
         $socket = $context->getSocket(config('ratchet.zmq.method', \ZMQ::SOCKET_PULL));
         $socket->bind(sprintf('tcp://%s:%d', config('ratchet.zmq.host', '127.0.0.1'), config('ratchet.zmq.port', 5555)));
 
+        $socket->on('messages', function ($messages) {
+            $this->ratchetServer->onEntry($messages);
+        });
+
         $socket->on('message', function ($message) {
             $this->ratchetServer->onEntry($message);
         });
