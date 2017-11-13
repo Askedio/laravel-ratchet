@@ -2,11 +2,12 @@
 
 **This is an updated fork of [Laravel Ratchet](https://github.com/Askedio/laravel-ratchet), built specifically to work with this [custom fork](https://github.com/simonhamp/echo) of Laravel Echo.**
 
-This fork enables you to create and run a fully functioning WebSocket server in your Laravel app that works with Laravel's built-in [broadcasting](https://laravel.com/docs/5.5/broadcasting).
+This fork enables you to create and run a fully functioning WebSocket server in your Laravel app that can receive messages from ZeroMQ.
 
 ## Requirements
 
 - PHP 7.1
+- Laravel 5.5
 - ZeroMQ
 - ext-zmq for PHP
 
@@ -22,21 +23,16 @@ Because this is a custom fork and it relies on another custom package (and becau
     {
         "type": "git",
         "url":  "git@github.com:simonhamp/laravel-ratchet.git"
-    },
-    {
-        "type": "git",
-        "url":  "git@github.com:simonhamp/laravel-zmq.git"
     }
 ]
 ```
 
-The service providers are loaded automatically in Laravel 5.5 using Package Autodiscovery.
+The service provider is loaded automatically in Laravel 5.5 using Package Autodiscovery.
 
 You **MUST** publish the vendor files so you can configure your server defaults.
 
 ```bash
 $ php artisan vendor:publish --provider=LaravelRatchetServiceProvider
-$ php artisan vendor:publish --provider=ZmqServiceProvider
 ```
 
 ## Starting the Server
@@ -65,26 +61,16 @@ You can do this simply by passing the `-z` option, i.e.:
 $ php artisan ratchet:serve --driver=WsServer -z
 ```
 
-This will connect to the socket you define in your `config/ratchet.php` settings. **You MUST set the `ratchet.zmq.method` option to `\ZMQ::SOCKET_PULL` to work with broadcasting.**
+This will connect to the socket you define in your `config/ratchet.php` settings.
 
-Set `BROADCASTING_DRIVER=zmq` in your `.env` and add the following ZeroMQ connection settings to your `config/broadcasting.php`:
+**You MUST set the `ratchet.zmq.method` option to `\ZMQ::SOCKET_PULL` to work with broadcasting.**
 
-```php
-'connections' => [
-    'zmq' => [
-        'driver' => 'zmq',
-    ],
-]
-```
+Be sure to install [my fork of `laravel-zmq`](https://github.com/simonhamp/laravel-zmq) to go along with this package.
 
-And update the `config/zmq.php` with the same socket details, except **set `zmq.connections.publish.method` to `\ZMQ::SOCKET_PUSH`**.
-
-This will use ZeroMQ as the back-channel to broadcast your events from your Laravel application to the Ratchet WebSocket server.
+This will allow you to use ZeroMQ as the back-channel to broadcast your events from your Laravel application to your Ratchet WebSocket server.
 
 For your web clients to subscribe to channels through Ratchet, you will need to install [this custom fork of Laravel Echo](https://github.com/simonhamp/echo).
 
 ## Acknowledgements
 
 This package would not be possible without the initial [awesome work](https://github.com/Askedio/laravel-ratchet) of [@gcphost](https://github.com/gcphost) of [Asked.io](https://medium.com/asked-io).
-
-Also, thanks to [@pelim](https://github.com/pelim) for creating his original [ZeroMQ broadcasting driver](https://github.com/pelim/laravel-zmq) for Laravel.
