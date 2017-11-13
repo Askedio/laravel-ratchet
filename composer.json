@@ -21,7 +21,7 @@
     "repositories": [
         {
             "type": "git",
-            "url":  "git@github.com:simonhamp/laravel-zmq.git"
+            "url":  "https://github.com/simonhamp/laravel-zmq.git"
         }
     ],
     "extra": {
