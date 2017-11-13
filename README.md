@@ -1,171 +1,86 @@
-![Header](http://i.imgur.com/H1OQeOV.png)
+# Laravel Ratchet Server
 
-This package provides the artisan command `ratchet:serve` that will start a [Ratchet](http://socketo.me/) [Io Server](http://socketo.me/docs/server),  [Web Socket](http://socketo.me/docs/websocket),  or [Wamp Server](http://socketo.me/docs/wamp) with the class of your making. Included are a few functions like `abort()` `send()` and `sendAll()` to make some common tasks easier.
+**This is an updated fork of Laravel Ratchet, built specifically to work with this [custom fork](https://github.com/simonhamp/echo) of Laravel Echo.**
 
-# Supports
-* WaServer, WampServer & IoServer
-* IpBlackList
-* Connection throttling
-* Message throttling
+This fork enables you to create and run a fully functioning WebSocket server in your Laravel app that works with Laravel's built-in [broadcasting](https://laravel.com/docs/5.5/broadcasting).
 
+## Requirements
 
+- PHP 7.1
+- ZeroMQ
+- ext-zmq for PHP
 
+## Installation
 
-# Installation
-Install with composer
-~~~
-composer require askedio/laravel-ratchet
-~~~
+Because this is a custom fork (and because I want to maintain compatibility with the original repo), the installation is a little more complicated. You must do all of this in your `composer.json` manually:
 
-Register the `provider` in `config/app.php`.
-~~~
-Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
-~~~
-Install [ZMQ](http://zeromq.org/intro:get-the-software) to use the `WampServer` driver.
-
-~~~
-apt-get install php7.0-zmq
-~~~
-
-# Push Server
-The default driver will create a simple Push server based on [Ratchets example](http://socketo.me/docs/push).
-
-~~~
-php artisan ratchet:serve
-
-Starting WampServer server on: 0.0.0.0:8080
-Starting ZMQ server on: 127.0.0.1:5555
-~~~
-
-Create your own class based on or extending [RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/Pusher.php).
-
-Insert data to ZMQ using [the example](http://socketo.me/docs/push#editblogsubmission) provided by Ratchet.
-
-
-# Socket Server
-Use the IoServer `driver` and the [RatchetServerExample.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetServerExample.php) `class` to create a simple socket server.
-
-Here is an example you could use in your `App`.
-~~~
-<?php
-
-namespace App;
-
-use Ratchet\ConnectionInterface;
-use Askedio\LaravelRatchet\RatchetServer;
-
-class RatchetServer extends RatchetServer
-{
-    public function onMessage(ConnectionInterface $conn, $input)
+```json
+"require": {
+    "askedio/laravel-ratchet": "^2.0"
+},
+"repositories": [
     {
-        parent::onMessage($conn, $input);
-
-        if (!$this->throttled) {
-            $this->send($conn, 'Hello you.');
-
-            $this->sendAll('Hello everyone.');
-
-            $this->send($conn, 'Wait, I don\'t know you! Bye bye!');
-
-            $this->abort($conn);
-        }
+        "type": "git",
+        "url":  "git@github.com:simonhamp/laravel-ratchet.git"
     }
-}
-~~~
-You'll need to change the class to in your command line or config.
-~~~
-php artisan ratchet:serve --driver=IoServer --class="App\RatchetServer::class"
-~~~
+]
+```
 
-# Command Line
-To use the default values from the configuration run the command as follows:
-~~~
-php artisan ratchet:serve
-~~~
-You can also define configuration items on the command line:
-~~~
-php artisan ratchet:serve  --help
+The service provider is loaded automatically in Laravel 5.5 using Package Autodiscovery.
 
-Usage:
-  ratchet:serve [options]
+You **MUST** publish the vendor files so you can configure your server defaults.
 
-Options:
-      --host[=HOST]      Ratchet server host [default: "0.0.0.0"]
-  -p, --port[=PORT]      Ratchet server port [default: "9090"]
-      --class[=CLASS]    Class that implements MessageComponentInterface. [default: "Askedio\LaravelRatchet\RatchetServerExample"]
-      --driver[=DRIVER]  Ratchet connection driver [IoServer|WsServer|WampServer] [default: "WampServer"]
-      ...
-~~~
+```bash
+$ php artisan vendor:publish --provider=LaravelRatchetServiceProvider
+$ php artisan vendor:publish --provider=ZmqServiceProvider
+```
 
+## Starting the Server
 
-# Configuration
-There are several configuration values that you will want to change. Publish the configuration then you can edit `config/ratchet.php`.
-~~~
-php artisan vendor:publish
-~~~
-### Configuration Options
-* **class**: Your MessageComponentInterface or WampServerInterface class.
-* **host**: The host to listen on.
-* **port**: The port to listen on.
-* **connectionLimit**: The total number of connections allowed (RatchetServer only).
-* **throttle**: [Throttle](https://github.com/GrahamCampbell/Laravel-Throttle) connections and messages.
-  * **onOpen**: limit:delay for connections.
-  * **onMessage**: limit:delay for messages.
-* **abortOnMessageThrottle**: disconnect client when message throttle triggered.
-* **blackList**: Collection or Model of the hosts to ban using [IpBlackList](http://socketo.me/docs/black).
+The quickest way to start a standard WebSocket server is simply by running:
 
-# Options
-Send a message to the current connection.
-~~~
-$this->send($conn, $message);
-~~~
-Send a message to all connections.
-~~~
-$this->sendAll($message);
-~~~
-Close current connection.
-~~~
-$this->abort($conn);
-~~~
+```bash
+$ php artisan ratchet:serve --driver=WsServer
+```
 
-# Supervisor Configuration
-> Supervisor is a client/server system that allows its users to control a number of processes on UNIX-like operating systems.
+This will run a simple example server based on `src/Examples/Pusher.php`.
 
-Things crash and long running processes need to be monitored. We can use [Supervisor](http://supervisord.org/index.html) to help with this.
+It's possible to create a WampServer or an IoServer also. Use the `--help` switch on the command to find out more.
 
+You should create your own server class inside your `app` folder by extending one of the core Ratchet server classes: [RatchetWsServer.php](https://github.com/simonhamp/laravel-ratchet/blob/master/src/RatchetWsServer.php) or [RatchetWampServer.php](https://github.com/simonhamp/laravel-ratchet/blob/master/src/RatchetWampServer.php).
 
-### Install supervisor.
-~~~
-sudo apt-get install supervisor
-~~~
-### Create the config.
+Then update your `config/ratchet.php` file to point to your server `class`.
 
-Replace `/home/forge/app.com/` with the path to your application.
-~~~
-sudo cat <<EOF > /etc/supervisor/conf.d/laravel-ratchet.conf
-[program:laravel-ratchet]
-process_name=%(program_name)s_%(process_num)02d
-command=php /home/forge/app.com/artisan ratchet:serve -q
-autostart=true
-autorestart=true
-user=vagrant
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/home/forge/app.com/ratchet.log
-EOF
-~~~
-### Enable & Start.
-~~~
-sudo supervisorctl reread
+## Use with Laravel Echo and Broadcasting
 
-sudo supervisorctl update
+To use broadcasting in your Laravel app with the server you create, you will need to tell the server to connect to a ZeroMQ socket.
 
-supervisorctl start laravel-ratchet:*
-~~~
+You can do this simply by passing the `-z` option, i.e.:
 
+```bash
+$ php artisan ratchet:serve --driver=WsServer -z
+```
 
-# Testing
-See contributing.
+This will connect to the socket you define in your `config/ratchet.php` settings. **You MUST set the `ratchet.zmq.method` option to `\ZMQ::SOCKET_PULL` to work with broadcasting.**
 
-# Contributing
-Write some tests, that'd be swell.
+Set `BROADCASTING_DRIVER=zmq` in your `.env` and add the following ZeroMQ connection settings to your `config/broadcasting.php`:
+
+```php
+'connections' => [
+    'zmq' => [
+        'driver' => 'zmq',
+    ],
+]
+```
+
+And update the `config/zmq.php` with the same socket details, except **set `zmq.connections.publish.method` to `\ZMQ::SOCKET_PUSH`**.
+
+This will use ZeroMQ as the back-channel to broadcast your events from your Laravel application to the Ratchet WebSocket server.
+
+For your web clients to subscribe to channels through Ratchet, you will need to install [this custom fork of Laravel Echo](https://github.com/simonhamp/echo).
+
+## Acknowledgements
+
+This package would not be possible without the initial [awesome work](https://github.com/Askedio/laravel-ratchet) of [@gcphost](https://github.com/gcphost) of [Asked.io](https://medium.com/asked-io).
+
+Also, thanks to [@pelim](https://github.com/pelim) for creating his original [ZeroMQ broadcasting driver](https://github.com/pelim/laravel-zmq) for Laravel.
