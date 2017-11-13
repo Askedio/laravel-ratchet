@@ -1,6 +1,6 @@
 {
     "name": "askedio/laravel-ratchet",
-    "description": "A Ratchet Example",
+    "description": "A Ratchet Server built for Laravel",
     "keywords": ["laravel"],
     "license": "MIT",
     "type": "library",
@@ -10,13 +10,20 @@
         "laravel/framework": "5.5.*",
         "cboden/ratchet": "^0.4",
         "graham-campbell/throttle": "^6.0",
-        "react/zmq": "0.2.*|0.3.*"
+        "react/zmq": "0.2.*|0.3.*",
+        "pelim/laravel-zmq": "^0.2"
     },
     "autoload": {
         "psr-4": {
             "Askedio\\LaravelRatchet\\": "src/"
         }
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url":  "git@github.com:simonhamp/laravel-zmq.git"
+        }
+    ],
     "extra": {
         "laravel": {
             "providers": [
