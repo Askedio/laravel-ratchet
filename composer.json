@@ -27,7 +27,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Askedio\\LaravelRatchet\\Providers\\LaravelRatchetServiceProvider"
+                "Askedio\\LaravelRatchet\\Providers\\LaravelRatchetServiceProvider",
+                "Pelim\\LaravelZmq\\ZmqServiceProvider"
             ]
         }
     }
