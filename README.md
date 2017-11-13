@@ -12,7 +12,7 @@ This fork enables you to create and run a fully functioning WebSocket server in 
 
 ## Installation
 
-Because this is a custom fork (and because I want to maintain compatibility with the original repo), the installation is a little more complicated. You must do all of this in your `composer.json` manually:
+Because this is a custom fork and it relies on another custom package (and because I want to maintain compatibility with the original repos), the installation is a little more complicated (for now). You must do all of this in your `composer.json` manually:
 
 ```json
 "require": {
@@ -22,11 +22,15 @@ Because this is a custom fork (and because I want to maintain compatibility with
     {
         "type": "git",
         "url":  "git@github.com:simonhamp/laravel-ratchet.git"
+    },
+    {
+        "type": "git",
+        "url":  "git@github.com:simonhamp/laravel-zmq.git"
     }
 ]
 ```
 
-The service provider is loaded automatically in Laravel 5.5 using Package Autodiscovery.
+The service providers are loaded automatically in Laravel 5.5 using Package Autodiscovery.
 
 You **MUST** publish the vendor files so you can configure your server defaults.
 
