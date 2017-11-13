@@ -1,6 +1,6 @@
 # Laravel Ratchet Server
 
-**This is an updated fork of Laravel Ratchet, built specifically to work with this [custom fork](https://github.com/simonhamp/echo) of Laravel Echo.**
+**This is an updated fork of [Laravel Ratchet](https://github.com/Askedio/laravel-ratchet), built specifically to work with this [custom fork](https://github.com/simonhamp/echo) of Laravel Echo.**
 
 This fork enables you to create and run a fully functioning WebSocket server in your Laravel app that works with Laravel's built-in [broadcasting](https://laravel.com/docs/5.5/broadcasting).
 
