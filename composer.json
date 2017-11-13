@@ -7,28 +7,21 @@
     "require": {
         "php": ">=7.1.0",
         "ext-zmq": "*",
-        "laravel/framework": "5.5.*",
         "cboden/ratchet": "^0.4",
         "graham-campbell/throttle": "^6.0",
-        "react/zmq": "0.2.*|0.3.*",
-        "pelim/laravel-zmq": "^0.2"
+        "illuminate/console": "5.5.*",
+        "illuminate/support": "5.5.*",
+        "react/zmq": "0.2.*|0.3.*"
     },
     "autoload": {
         "psr-4": {
             "Askedio\\LaravelRatchet\\": "src/"
         }
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url":  "https://github.com/simonhamp/laravel-zmq.git"
-        }
-    ],
     "extra": {
         "laravel": {
             "providers": [
-                "Askedio\\LaravelRatchet\\Providers\\LaravelRatchetServiceProvider",
-                "Pelim\\LaravelZmq\\ZmqServiceProvider"
+                "Askedio\\LaravelRatchet\\Providers\\LaravelRatchetServiceProvider"
             ]
         }
     }
