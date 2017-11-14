@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'toManyConnectionAttempts'  => json_encode(['error' => 'toManyConnectionAttempts']),
-    'toManyConnections'         => json_encode(['error' => 'toManyConnections']),
-    'toManyMessages'            => json_encode(['error' => 'toManyMessages']),
+    'tooManyConnectionAttempts'  => json_encode(['error' => 'tooManyConnectionAttempts']),
+    'tooManyConnections'         => json_encode(['error' => 'tooManyConnections']),
+    'tooManyMessages'            => json_encode(['error' => 'tooManyMessages']),
 ];

@@ -2,23 +2,30 @@
 
 namespace Askedio\LaravelRatchet\Console\Commands;
 
-use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
+use Ratchet\Wamp\WampServer;
 use Ratchet\Server\IoServer;
 use Ratchet\Server\IpBlackList;
-use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
+use Illuminate\Console\Command;
+use React\EventLoop\LoopInterface;
+use React\ZMQ\Context as ZMQContext;
+use Ratchet\Wamp\WampServerInterface;
+use Ratchet\MessageComponentInterface;
+use React\Socket\Server as SocketServer;
+use React\EventLoop\Factory as EventLoop;
+use Askedio\LaravelRatchet\RatchetWsServer;
+use Askedio\LaravelRatchet\RatchetWampServer;
 use Symfony\Component\Console\Input\InputOption;
 
 class RatchetServerCommand extends Command
 {
     /**
-     * The console command name.
+     * The name of the console command.
      *
      * @var string
      */
     protected $name = 'ratchet:serve';
-
     /**
      * The console command description.
      *
@@ -41,136 +48,37 @@ class RatchetServerCommand extends Command
     protected $port;
 
     /**
-     * Create a new command instance.
+     * The class to use for the server.
      *
-     * @return void
+     * @var string
      */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function handle()
-    {
-        $this->fire();
-    }
+    protected $class;
 
     /**
-     * Execute the console command.
+     * The type of server to boot.
      *
-     * @return mixed
+     * @var string
      */
-    public function fire()
-    {
-        $this->host = $this->option('host');
-
-        $this->port = intval($this->option('port'));
-
-        $this->info(sprintf('Starting %s server on: %s:%d', $this->option('driver'), $this->host, $this->port));
-
-        $this->server($this->option('driver'))->run();
-    }
+    protected $driver;
 
     /**
-     * Get the IO driver.
+     * The ReactPHP event loop.
      *
-     * @param [type] $driver [description]
-     *
-     * @return [type] [description]
+     * @var LoopInterface
      */
-    private function getDriver($driver)
-    {
-        $class = $this->option('class');
-
-        $ratchetServer = new IpBlackList(new $class($this));
-
-        foreach (config('ratchet.blackList')->all() as $host) {
-            $ratchetServer->blockAddress($host);
-        }
-
-        if ($driver == 'WsServer') {
-            return $this->getWsServerDriver($ratchetServer);
-        }
-
-        return $ratchetServer;
-    }
+    protected $eventLoop;
 
     /**
-     * Get the WsServer driver.
+     * The mutable server instance.
      *
-     * @param [type] $ratchetServer [description]
-     *
-     * @return [type] [description]
+     * @var mixed
      */
-    private function getWsServerDriver($ratchetServer)
-    {
-        return new HttpServer(
-            new WsServer(
-                $ratchetServer
-            )
-        );
-    }
+    protected $serverInstance;
 
     /**
-     * Get the WampServer driver.
-     *
-     * @param [type] $ratchetServer [description]
-     *
-     * @return [type] [description]
+     * The original instance of $this->class
      */
-    private function startWampServer()
-    {
-        $loop = \React\EventLoop\Factory::create();
-
-        $class = $this->option('class');
-
-        $ratchetServer = new $class($this);
-
-        $this->info(sprintf('Starting ZMQ server on: %s:%s', config('ratchet.zmq.host'), config('ratchet.zmq.port')));
-
-        $context = new \React\ZMQ\Context($loop);
-        $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
-        $pull->bind(sprintf('tcp://%s:%d', config('ratchet.zmq.host'), config('ratchet.zmq.port')));
-
-        $pull->on('message', function ($message) use ($ratchetServer) {
-            $ratchetServer->onEntry($message);
-        });
-
-
-        $webSock = new \React\Socket\Server($this->host.':'.$this->port, $loop);
-        $webServer = new \Ratchet\Server\IoServer(
-            new \Ratchet\Http\HttpServer(
-                new \Ratchet\WebSocket\WsServer(
-                    new \Ratchet\Wamp\WampServer(
-                        $ratchetServer
-                    )
-                )
-            ),
-            $webSock
-        );
-
-        return $loop;
-    }
-
-    /**
-     * Return the IoServer factory.
-     *
-     * @param [type] $driver [description]
-     *
-     * @return [type] [description]
-     */
-    private function server($driver)
-    {
-        if ($driver == 'WampServer') {
-            return $this->startWampServer();
-        }
-
-        return IoServer::factory(
-            $this->getDriver($driver),
-            $this->port,
-            $this->host
-        );
-    }
+    protected $ratchetServer;
 
     /**
      * Get the console command options.
@@ -184,6 +92,178 @@ class RatchetServerCommand extends Command
             ['port', 'p', InputOption::VALUE_OPTIONAL, 'Ratchet server port', config('ratchet.port', 8080)],
             ['class', null, InputOption::VALUE_OPTIONAL, 'Class that implements MessageComponentInterface.', config('ratchet.class')],
             ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer|WampServer]', 'WampServer'],
+            ['zmq', 'z', null, 'Bind server to a ZeroMQ socket (always on for WampServer)'],
         ];
+    }
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $this->host = $this->option('host');
+
+        $this->port = intval($this->option('port'));
+
+        $this->class = $this->option('class');
+
+        $this->driver = $this->option('driver');
+
+        $this->startServer();
+    }
+
+    /**
+     * Start the appropriate server.
+     *
+     * @param string $driver
+     */
+    private function startServer($driver = null)
+    {
+        if (! $driver) {
+            $driver = $this->driver;
+        }
+
+        $this->info(sprintf('Starting %s server on: %s:%d', $this->option('driver'), $this->host, $this->port));
+
+        $this->createServerInstance();
+
+        $this->{'start'.$driver}()->run();
+    }
+
+    /**
+     * Get/generate the server instance from the class provided.
+     */
+    private function createServerInstance()
+    {
+        if (! $this->serverInstance instanceof $this->class) {
+            $class = $this->class;
+            $this->serverInstance = $this->ratchetServer = new $class($this);
+        }
+    }
+
+    /**
+     * Decorate a server instance with a blacklist instance and block any blacklisted addresses.
+     */
+    private function bootWithBlacklist()
+    {
+        $this->serverInstance = new IpBlackList($this->serverInstance);
+
+        foreach (config('ratchet.blackList')->all() as $host) {
+            $this->serverInstance->blockAddress($host);
+        }
+    }
+
+    /**
+     * Decorate the server instance with a WebSocket server.
+     *
+     * @param bool $withZmq
+     * @return IoServer
+     */
+    private function bootWebSocketServer($withZmq = false)
+    {
+        if ($withZmq || $this->option('zmq')) {
+            $this->bootZmqConnection();
+        }
+
+        $this->serverInstance = new HttpServer(
+            new WsServer($this->serverInstance)
+        );
+
+        return $this->bootIoServer();
+    }
+
+    /**
+     * Deploy a WampServer
+     *
+     * @return IoServer
+     */
+    private function startWampServer()
+    {
+        if (! $this->serverInstance instanceof RatchetWampServer) {
+            throw new \Exception("{$this->class} must be an instance of ".RatchetWampServer::class." to create a Wamp server");
+        }
+
+        // Decorate the server instance with a WampServer
+        $this->serverInstance = new WampServer($this->serverInstance);
+
+        return $this->bootWebSocketServer(true);
+    }
+
+    /**
+     * Deploy a WsServer.
+     *
+     * @return IoServer
+     */
+    private function startWsServer()
+    {
+        if (! $this->serverInstance instanceof RatchetWsServer) {
+            throw new \Exception("{$this->class} must be an instance of ".RatchetWsServer::class." to create a WebSocket server");
+        }
+
+        $this->bootWithBlacklist();
+
+        return $this->bootWebSocketServer();
+    }
+
+    /**
+     * Deploy an IoServer only
+     *
+     * @return IoServer
+     */
+    private function startIoServer()
+    {
+        $this->bootWithBlacklist();
+
+        return $this->bootIoServer();
+    }
+
+    /**
+     * Create the IoServer instance to encapsulate our server in.
+     *
+     * @return IoServer
+     */
+    private function bootIoServer()
+    {
+        $socket = new SocketServer($this->host.':'.$this->port, $this->getEventLoop());
+
+        return new IoServer(
+            $this->serverInstance,
+            $socket,
+            $this->getEventLoop()
+        );
+    }
+
+    /**
+     * Boot a ZMQ listener and let the Ratchet server handle its events.
+     */
+    private function bootZmqConnection()
+    {
+        $this->info(sprintf('Starting ZMQ listener on: %s:%s', config('ratchet.zmq.host'), config('ratchet.zmq.port')));
+
+        $context = new ZMQContext($this->getEventLoop());
+        $socket = $context->getSocket(config('ratchet.zmq.method', \ZMQ::SOCKET_PULL));
+        $socket->bind(sprintf('tcp://%s:%d', config('ratchet.zmq.host', '127.0.0.1'), config('ratchet.zmq.port', 5555)));
+
+        $socket->on('messages', function ($messages) {
+            $this->ratchetServer->onEntry($messages);
+        });
+
+        $socket->on('message', function ($message) {
+            $this->ratchetServer->onEntry($message);
+        });
+    }
+
+    /**
+     * Generate and return a React EventLoop object.
+     *
+     * @return LoopInterface
+     */
+    private function getEventLoop()
+    {
+        if (! $this->eventLoop instanceof LoopInterface) {
+            $this->eventLoop = EventLoop::create();
+        }
+
+        return $this->eventLoop;
     }
 }

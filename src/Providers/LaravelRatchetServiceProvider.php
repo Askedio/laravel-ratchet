@@ -2,8 +2,9 @@
 
 namespace Askedio\LaravelRatchet\Providers;
 
-use Askedio\LaravelRatchet\Console\Commands\RatchetServerCommand;
 use Illuminate\Support\ServiceProvider;
+use GrahamCampbell\Throttle\ThrottleServiceProvider;
+use Askedio\LaravelRatchet\Console\Commands\RatchetServerCommand;
 
 class LaravelRatchetServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class LaravelRatchetServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->register(\GrahamCampbell\Throttle\ThrottleServiceProvider::class);
+        $this->app->register(ThrottleServiceProvider::class);
 
         $this->app->singleton('command.ratchet.serve', function () {
             return new RatchetServerCommand();

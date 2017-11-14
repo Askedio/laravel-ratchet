@@ -1,15 +1,16 @@
 {
     "name": "askedio/laravel-ratchet",
-    "description": "A Ratchet Example",
+    "description": "A Ratchet Server built for Laravel",
     "keywords": ["laravel"],
     "license": "MIT",
     "type": "library",
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.1.0",
         "ext-zmq": "*",
-        "laravel/framework": "5.5.*",
         "cboden/ratchet": "^0.4",
         "graham-campbell/throttle": "^6.0",
+        "illuminate/console": "5.5.*",
+        "illuminate/support": "5.5.*",
         "react/zmq": "0.2.*|0.3.*"
     },
     "autoload": {

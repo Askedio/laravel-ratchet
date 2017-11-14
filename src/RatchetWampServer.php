@@ -5,10 +5,9 @@ namespace Askedio\LaravelRatchet;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\WampServerInterface;
 
-class Pusher implements WampServerInterface
+abstract class RatchetWampServer implements WampServerInterface
 {
     public $subscribedTopics = [];
-
 
     protected $console = false;
 
