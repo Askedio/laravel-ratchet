@@ -41,7 +41,7 @@ Then update your `config/ratchet.php` file to point to your server `class`.
 
 ## Use with Laravel Broadcasting
 
-To use broadcasting in your Laravel app with the server you create, you will need a ZeroMQ broadcast driver for Laravel.
+To use broadcasting in your Laravel app with the server you create, you will need a ZeroMQ broadcast driver for Laravel (e.g. [this one](https://github.com/pelim/laravel-zmq)).
 
 You will also need to tell your Ratchet server to bind to a ZeroMQ socket. You can do this simply by passing the `-z` option, i.e.:
 
