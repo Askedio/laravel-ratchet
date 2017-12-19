@@ -35,7 +35,7 @@ This will run a simple example server based on `src/Examples/Pusher.php`.
 
 It's possible to create a WampServer or an IoServer also. Use the `--help` switch on the command to find out more.
 
-You should create your own server class inside your `app` folder by extending one of the core Ratchet server classes: [RatchetWsServer.php](https://github.com/simonhamp/laravel-ratchet/blob/master/src/RatchetWsServer.php) or [RatchetWampServer.php](https://github.com/simonhamp/laravel-ratchet/blob/master/src/RatchetWampServer.php).
+You should create your own server class inside your `app` folder by extending one of the core Ratchet server classes: [RatchetWsServer.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetWsServer.php) or [RatchetWampServer.php](https://github.com/Askedio/laravel-ratchet/blob/master/src/RatchetWampServer.php).
 
 Then update your `config/ratchet.php` file to point to your server `class`.
 
