@@ -20,7 +20,7 @@ return [
         'onMessage' => '20:1',
      ],
     'abortOnMessageThrottle' => false,
-    'blackList'              => collect([]),
+    'blackList'              => [],
     'zmq'                    => [
         'host'   => '127.0.0.1',
         'port'   => 5555,

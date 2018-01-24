@@ -148,7 +148,7 @@ class RatchetServerCommand extends Command
     {
         $this->serverInstance = new IpBlackList($this->serverInstance);
 
-        foreach (config('ratchet.blackList')->all() as $host) {
+        foreach (config('ratchet.blackList') as $host) {
             $this->serverInstance->blockAddress($host);
         }
     }
