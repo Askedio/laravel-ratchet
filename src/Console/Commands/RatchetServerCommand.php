@@ -81,6 +81,11 @@ class RatchetServerCommand extends Command
     protected $ratchetServer;
 
     /**
+     * WebSocket server instance.
+     */
+    protected $wsServerInstance;
+
+    /**
      * Get the console command options.
      *
      * @return array
@@ -165,9 +170,13 @@ class RatchetServerCommand extends Command
             $this->bootZmqConnection();
         }
 
+        $this->wsServerInstance = new WsServer($this->serverInstance);
+
         $this->serverInstance = new HttpServer(
-            new WsServer($this->serverInstance)
+            $this->wsServerInstance
         );
+
+        $this->wsServerInstance->enableKeepAlive($this->getEventLoop(), 30);
 
         return $this->bootIoServer();
     }
