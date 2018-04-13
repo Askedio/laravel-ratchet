@@ -62,6 +62,13 @@ class RatchetServerCommand extends Command
     protected $driver;
 
     /**
+     * Keep alive interval.
+     *
+     * @var int
+     */
+    protected $keepAlive;
+
+    /**
      * The ReactPHP event loop.
      *
      * @var LoopInterface
@@ -98,6 +105,7 @@ class RatchetServerCommand extends Command
             ['class', null, InputOption::VALUE_OPTIONAL, 'Class that implements MessageComponentInterface.', config('ratchet.class')],
             ['driver', null, InputOption::VALUE_OPTIONAL, 'Ratchet connection driver [IoServer|WsServer|WampServer]', 'WampServer'],
             ['zmq', 'z', null, 'Bind server to a ZeroMQ socket (always on for WampServer)'],
+            ['keepAlive', null, InputOption::VALUE_OPTIONAL, 'Option to enable WebSocket server keep alive [interval in seconds]', config('ratchet.keepAlive', 0)],
         ];
     }
 
@@ -113,6 +121,8 @@ class RatchetServerCommand extends Command
         $this->class = $this->option('class');
 
         $this->driver = $this->option('driver');
+
+        $this->keepAlive = $this->option('keepAlive');
 
         $this->startServer();
     }
@@ -176,7 +186,9 @@ class RatchetServerCommand extends Command
             $this->wsServerInstance
         );
 
-        $this->wsServerInstance->enableKeepAlive($this->getEventLoop(), 30);
+        if($this->keepAlive > 0){
+            $this->wsServerInstance->enableKeepAlive($this->getEventLoop(), $this->keepAlive);
+        }
 
         return $this->bootIoServer();
     }
