@@ -4,7 +4,7 @@ This package enables you to create and run a fully functioning WebSocket server 
 
 ## Requirements
 
-- PHP 7.1
+- PHP 7.1+
 - Laravel 5.5+
 - ZeroMQ
 - ext-zmq for PHP
