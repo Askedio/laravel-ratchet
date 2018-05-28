@@ -25,7 +25,7 @@ $ php artisan vendor:publish --provider="Askedio\LaravelRatchet\Providers\Larave
 
 ## Starting the Server
 
-After completing installtion, the quickest way to start a standard WebSocket server is simply by running:
+After completing installation, the quickest way to start a standard WebSocket server is simply by running:
 
 ```bash
 $ php artisan ratchet:serve --driver=WsServer
