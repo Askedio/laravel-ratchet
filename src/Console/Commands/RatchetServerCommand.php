@@ -69,6 +69,13 @@ class RatchetServerCommand extends Command
     protected $keepAlive;
 
     /**
+     * SSL/TLS Options.
+     *
+     * @var array
+     */
+    protected $tls;
+
+    /**
      * The ReactPHP event loop.
      *
      * @var LoopInterface
@@ -123,6 +130,16 @@ class RatchetServerCommand extends Command
         $this->driver = $this->option('driver');
 
         $this->keepAlive = $this->option('keepAlive');
+
+        $this->tls = config('ratchet.tls', []);
+        $peer_name = env('APP_URL');
+        $pos = strpos($peer_name, '://');
+        if ($pos !== false) {
+            $peer_name = substr($peer_name, $pos+3);
+        }
+        $this->tls += [
+            'peer_name' => $peer_name
+        ];
 
         $this->startServer();
     }
@@ -245,7 +262,10 @@ class RatchetServerCommand extends Command
      */
     private function bootIoServer()
     {
-        $socket = new SocketServer($this->host.':'.$this->port, $this->getEventLoop());
+        $context = [
+            'tls' => $this->tls,
+        ];
+        $socket = new SocketServer($this->host.':'.$this->port, $this->getEventLoop(), $context);
 
         return new IoServer(
             $this->serverInstance,
