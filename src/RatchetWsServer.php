@@ -103,7 +103,7 @@ abstract class RatchetWsServer implements MessageComponentInterface
      */
     protected function limit()
     {
-        if ($connectionLimit = config('ratchet.connectionLimit') && $this->connections - 1 >= $connectionLimit) {
+        if (($connectionLimit = config('ratchet.connectionLimit')) && $this->connections - 1 >= $connectionLimit) {
             $this->console->info(sprintf('To many connections: %d of %d', $this->connections - 1, $connectionLimit));
             $this->conn->send(trans('ratchet::messages.tooManyConnections'));
             $this->conn->close();
