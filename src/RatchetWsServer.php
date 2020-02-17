@@ -2,6 +2,7 @@
 
 namespace Askedio\LaravelRatchet;
 
+use Illuminate\Support\Str;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use GrahamCampbell\Throttle\Facades\Throttle;
@@ -74,7 +75,7 @@ abstract class RatchetWsServer implements MessageComponentInterface
         $this->console->info(sprintf('Connected: %d', $this->conn->resourceId));
 
         $this->connections = count($this->clients);
-        $this->console->info(sprintf('%d %s', $this->connections, str_plural('connection', $this->connections)));
+        $this->console->info(sprintf('%d %s', $this->connections, Str::plural('connection', $this->connections)));
 
         return $this;
     }
